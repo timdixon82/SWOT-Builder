@@ -1,0 +1,20 @@
+{
+  "name": "swot-builder",
+  "version": "1.0.0",
+  "description": "Browser-local AI-assisted SWOT analysis tool with no server, no API key, and no account.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:html": "htmlhint index.html",
+    "lint:css": "stylelint \"*.css\"",
+    "lint:js": "eslint \"*.jsx\" \"*.js\" --ignore-pattern \"assets/analytics/count.js\" --no-error-on-unmatched-pattern",
+    "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
+  },
+  "devDependencies": {
+    "eslint": "9.27.0",
+    "globals": "16.1.0",
+    "htmlhint": "1.6.3",
+    "stylelint": "16.20.0",
+    "stylelint-config-standard": "37.0.0"
+  }
+}
