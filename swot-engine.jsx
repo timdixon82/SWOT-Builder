@@ -157,8 +157,10 @@ const LocalAI = (function () {
     if (window.mlc_llm) return;
     await new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      // Use npm latest; pin to a specific version tag if you need reproducibility.
-      s.src = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/lib/umd/bundle.js';
+      // Pinned to 0.2.83 (2026-05-24, ADR 0007). SRI hash to be added in Phase 2
+      // remediation once the exact CDN file bytes are confirmed by CI (the UMD bundle
+      // path is served by jsDelivr and not included in the npm package).
+      s.src = 'https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm@0.2.83/lib/umd/bundle.js';
       s.onload = resolve;
       s.onerror = () => reject(new Error('WebLLM script failed to load'));
       document.head.appendChild(s);
