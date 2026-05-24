@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SWOT Builder</title>
 
+  <!--
+    Content Security Policy (ADR 0007 / Jed finding 1).
+    Delivered as a meta tag because GitHub Pages cannot send custom HTTP response headers.
+    - default-src 'none': deny everything not explicitly listed.
+    - script-src: allow this origin (theme.js, jsx files) plus unpkg.com (React, Babel,
+      html2canvas) plus cdn.jsdelivr.net (WebLLM). 'unsafe-inline' is required because
+      Babel Standalone compiles JSX at runtime and injects script elements. 'wasm-unsafe-eval'
+      is required for the WebLLM WebAssembly runtime (see ICCC Q67 pattern).
+    - style-src: 'unsafe-inline' is required because tweaks-panel.jsx injects a style block
+      at runtime. This exception is documented in docs/exceptions/.
+    - font-src 'self': Roboto fonts are self-hosted in fonts/.
+    - connect-src: cdn.jsdelivr.net is required for WebLLM model weight downloads.
+      timdixon82.goatcounter.com is required for GoatCounter analytics.
+    - img-src: blob: and data: are required for html2canvas image export.
+    - worker-src blob:: WebLLM uses Web Workers loaded from blob URLs.
+    - child-src blob:: required alongside worker-src for some browsers.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src https://cdn.jsdelivr.net https://timdixon82.goatcounter.com; img-src 'self' blob: data:; worker-src blob:; child-src blob:;" />
+
+  <!-- Referrer policy: send origin only on cross-origin requests. -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
   <!-- Theme bootstrap (must be first to avoid FOUC) -->
   <script src="theme.js"></script>
 
@@ -15,13 +37,17 @@
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='6' y='6' width='24' height='24' rx='3' fill='%23061528'/%3E%3Crect x='34' y='6' width='24' height='24' rx='3' fill='%23FF7C00'/%3E%3Crect x='6' y='34' width='24' height='24' rx='3' fill='%23FF7C00'/%3E%3Crect x='34' y='34' width='24' height='24' rx='3' fill='%23061528'/%3E%3C/svg%3E" />
 
-  <!-- React + Babel (pinned versions) -->
+  <!-- React + Babel (pinned versions with Subresource Integrity hashes) -->
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-  <!-- html2canvas for "copy as image" — loaded async, app degrades gracefully if missing -->
-  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!--
+    html2canvas for "copy as image" — loaded async, app degrades gracefully if missing.
+    Pinned to 1.4.1 with Subresource Integrity hash (ADR 0007 / Jed finding 2).
+    Hash generated from npm package html2canvas@1.4.1/dist/html2canvas.min.js.
+  -->
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -34,5 +60,11 @@
   <script type="text/babel" src="swot-interview.jsx"></script>
   <script type="text/babel" src="swot-board.jsx"></script>
   <script type="text/babel" src="swot-app.jsx"></script>
+
+  <!-- GoatCounter analytics (self-hosted count.js, team default tracker). -->
+  <script
+    data-goatcounter="https://timdixon82.goatcounter.com/count"
+    async
+    src="./assets/analytics/count.js"></script>
 </body>
 </html>
