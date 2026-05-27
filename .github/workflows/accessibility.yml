@@ -39,7 +39,14 @@ jobs:
         run: npm install -g pa11y @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
 
       - name: Install matching ChromeDriver for axe-core
-        run: npx browser-driver-manager install chrome
+        run: |
+          npx browser-driver-manager install chrome
+          # Export BDM's chromedriver to GITHUB_PATH so subsequent steps
+          # find it before the system ChromeDriver (which may be a different version).
+          bdm_bin=$(find "$HOME/.browser-driver-manager" -name "chromedriver" -type f 2>/dev/null | head -1)
+          if [ -n "$bdm_bin" ]; then
+            echo "$(dirname "$bdm_bin")" >> "$GITHUB_PATH"
+          fi
 
       - name: Build CI pa11y config with system Chrome path
         run: |
