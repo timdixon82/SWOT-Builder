@@ -31,8 +31,8 @@ jobs:
       - name: Install accessibility tools
         run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
 
-      - name: Install matching Chrome and ChromeDriver
-        run: npx browser-driver-manager install chrome
+      - name: Install Chrome into Puppeteer cache (required by Pa11y)
+        run: npx puppeteer browsers install chrome
 
       - name: Serve the site in the background
         run: python3 -m http.server 8080 &
