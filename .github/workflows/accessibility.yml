@@ -5,11 +5,10 @@
 # which catches HTML-level violations. Full rendered-interface testing is Carol's
 # responsibility in her manual test pass.
 #
-# Pa11y picks up pa11y.json in the repository root. In CI, a temporary
-# pa11y.ci.json is generated with the system Chrome path set as
-# chromeLaunchConfig.executablePath, avoiding Puppeteer cache version drift
-# when the runner updates Chrome. No untrusted context variables are used
-# in any run step.
+# Pa11y picks up pa11y.json in the repository root, which sets
+# chromeLaunchConfig.args to include --no-sandbox. This is required
+# because GitHub Actions runners execute as root in a Docker container,
+# where Chromium refuses to run without --no-sandbox.
 #
 # Action versions pinned on 2026-05-24.
 
@@ -32,15 +31,10 @@ jobs:
           node-version: lts/*
 
       - name: Install accessibility tools
-        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
+        run: npm install -g pa11y @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
 
       - name: Install matching ChromeDriver for axe-core
         run: npx browser-driver-manager install chrome
-
-      - name: Build CI pa11y config with system Chrome path
-        run: |
-          CHROME=$(which google-chrome-stable 2>/dev/null || which google-chrome 2>/dev/null || which chromium 2>/dev/null)
-          jq --arg chrome "$CHROME" '.chromeLaunchConfig.executablePath = $chrome' pa11y.json > pa11y.ci.json
 
       - name: Serve the site in the background
         run: python3 -m http.server 8080 &
@@ -49,7 +43,7 @@ jobs:
         run: npx wait-on http://localhost:8080 --timeout 15000
 
       - name: Pa11y on index.html at WCAG 2.2 AAA
-        run: pa11y --standard WCAG2AAA --config pa11y.ci.json http://localhost:8080/index.html
+        run: pa11y --standard WCAG2AAA http://localhost:8080/index.html
 
       - name: axe-core on index.html at WCAG 2.2 AAA
         run: axe http://localhost:8080/index.html --tags wcag2a,wcag2aa,wcag2aaa,wcag22aa,wcag22aaa --chrome-options=no-sandbox
