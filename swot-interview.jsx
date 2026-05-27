@@ -51,7 +51,7 @@ function TagEditor({ tags, onChange }) {
       {tags.map((t, i) => (
         <span key={i} className="tag-pill">
           {t}
-          <span className="x" onClick={() => onChange(tags.filter((_, j) => j !== i))} aria-label={`remove tag ${t}`}>×</span>
+          <button type="button" className="x" aria-label={`Remove tag ${t}`} onClick={() => onChange(tags.filter((_, j) => j !== i))}>×</button>
         </span>
       ))}
       <input
@@ -271,6 +271,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
               <textarea
                 ref={answerRef}
                 className="textarea"
+                aria-label="Your answer"
                 placeholder={loadingQ ? "I'll be ready in a second…" : "Type your answer — a sentence is plenty."}
                 value={answer}
                 disabled={loadingQ || analysing}
@@ -325,6 +326,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
 
                 <textarea
                   className="textarea"
+                  aria-label="Item description"
                   value={editedDesc}
                   onChange={e => setEditedDesc(e.target.value)}
                   placeholder="One or two sentences expanding the point"

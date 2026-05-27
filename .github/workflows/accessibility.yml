@@ -5,11 +5,15 @@
 # which catches HTML-level violations. Full rendered-interface testing is Carol's
 # responsibility in her manual test pass.
 #
-# Pa11y picks up pa11y.json in the repository root. In CI, a temporary
-# pa11y.ci.json is generated with the system Chrome path set as
-# chromeLaunchConfig.executablePath, avoiding Puppeteer cache version drift
-# when the runner updates Chrome. No untrusted context variables are used
-# in any run step.
+# Pa11y: browser-driver-manager installs Chrome+ChromeDriver but does not place
+# Chrome in Puppeteer's cache path. A CI-only pa11y.ci.json is generated via jq,
+# setting chromeLaunchConfig.executablePath to the system Chrome so Pa11y's
+# bundled puppeteer-core can find it regardless of runner Chrome version.
+#
+# axe-core: uses browser-driver-manager's installed ChromeDriver directly.
+#
+# This pattern must be applied to every team repo until pa11y changes how it
+# resolves its Chrome path. See work folder 025 log for the investigation.
 #
 # Action versions pinned on 2026-05-24.
 
@@ -32,10 +36,17 @@ jobs:
           node-version: lts/*
 
       - name: Install accessibility tools
-        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
+        run: npm install -g pa11y @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
 
       - name: Install matching ChromeDriver for axe-core
-        run: npx browser-driver-manager install chrome
+        run: |
+          npx browser-driver-manager install chrome
+          # Export BDM's chromedriver to GITHUB_PATH so subsequent steps
+          # find it before the system ChromeDriver (which may be a different version).
+          bdm_bin=$(find "$HOME/.browser-driver-manager" -name "chromedriver" -type f 2>/dev/null | head -1)
+          if [ -n "$bdm_bin" ]; then
+            echo "$(dirname "$bdm_bin")" >> "$GITHUB_PATH"
+          fi
 
       - name: Build CI pa11y config with system Chrome path
         run: |

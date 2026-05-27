@@ -29,16 +29,67 @@ function ItemEditorModal({ item, onClose, onSave, onDelete }) {
   const [conf, setConf] = useS_B(item.confidence || "med");
   const [tagDraft, setTagDraft] = useS_B("");
 
+  const modalRef = useR_B(null);
+  const headingId = "item-editor-heading";
+
   function addTag() {
     const v = tagDraft.trim().replace(/,$/, "");
     if (v && !tags.includes(v)) setTags([...tags, v].slice(0, 6));
     setTagDraft("");
   }
 
+  // Move focus to first focusable element on mount
+  useE_B(() => {
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = el.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length) focusable[0].focus();
+  }, []);
+
+  // Focus trap and Escape key
+  function handleKeyDown(e) {
+    if (e.key === "Escape") { onClose(); return; }
+    if (e.key !== "Tab") return;
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = Array.from(el.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )).filter(n => !n.disabled);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function handleBackdropKey(e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClose(); }
+  }
+
   return (
-    <div className="modal-back" onClick={onClose}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <h3>Edit item</h3>
+    <div
+      className="modal-back"
+      role="button"
+      tabIndex={0}
+      aria-label="Close dialog"
+      onClick={onClose}
+      onKeyDown={handleBackdropKey}
+    >
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={headingId}
+        ref={modalRef}
+        onClick={e => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
+      >
+        <h3 id={headingId}>Edit item</h3>
 
         <div className="field">
           <label className="field-label">Quadrant</label>
@@ -71,7 +122,7 @@ function ItemEditorModal({ item, onClose, onSave, onDelete }) {
             {tags.map((t, i) => (
               <span key={i} className="tag-pill">
                 {t}
-                <span className="x" onClick={() => setTags(tags.filter((_, j) => j !== i))}>×</span>
+                <button type="button" className="x" aria-label={`Remove tag ${t}`} onClick={() => setTags(tags.filter((_, j) => j !== i))}>×</button>
               </span>
             ))}
             <input
