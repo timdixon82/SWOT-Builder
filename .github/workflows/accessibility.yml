@@ -5,8 +5,10 @@
 # which catches HTML-level violations. Full rendered-interface testing is Carol's
 # responsibility in her manual test pass.
 #
-# Pa11y picks up pa11y.json in the repository root. No untrusted context
-# variables are used in any run step.
+# Pa11y picks up pa11y.json in the repository root. Pa11y is pointed at the
+# system google-chrome-stable via --chromium-path to avoid Puppeteer cache
+# version drift on runner updates. No untrusted context variables are used
+# in any run step.
 #
 # Action versions pinned on 2026-05-24.
 
@@ -29,10 +31,7 @@ jobs:
           node-version: lts/*
 
       - name: Install accessibility tools
-        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
-
-      - name: Install Chrome into Puppeteer cache (required by Pa11y)
-        run: npx puppeteer browsers install chrome
+        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1
 
       - name: Serve the site in the background
         run: python3 -m http.server 8080 &
@@ -41,7 +40,7 @@ jobs:
         run: npx wait-on http://localhost:8080 --timeout 15000
 
       - name: Pa11y on index.html at WCAG 2.2 AAA
-        run: pa11y --standard WCAG2AAA http://localhost:8080/index.html
+        run: pa11y --standard WCAG2AAA --chromium-path "$(which google-chrome-stable || which google-chrome || which chromium)" http://localhost:8080/index.html
 
       - name: axe-core on index.html at WCAG 2.2 AAA
         run: axe http://localhost:8080/index.html --tags wcag2a,wcag2aa,wcag2aaa,wcag22aa,wcag22aaa --chrome-options=no-sandbox
