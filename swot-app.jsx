@@ -64,10 +64,61 @@ function DownloadConsentModal({ model, onConfirm, onCancel }) {
     ? `${(model.sizeMB / 1000).toFixed(1)} GB`
     : `${model.sizeMB} MB`;
 
+  const modalRef = useR_A(null);
+  const headingId = "download-consent-heading";
+
+  // Move focus to first focusable element on mount
+  useE_A(() => {
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = el.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length) focusable[0].focus();
+  }, []);
+
+  // Focus trap and Escape key
+  function handleKeyDown(e) {
+    if (e.key === "Escape") { onCancel(); return; }
+    if (e.key !== "Tab") return;
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = Array.from(el.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )).filter(n => !n.disabled);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+    }
+  }
+
+  function handleBackdropKey(e) {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onCancel(); }
+  }
+
   return (
-    <div className="modal-back" onClick={onCancel}>
-      <div className="modal" onClick={e => e.stopPropagation()}>
-        <h3>Download AI model?</h3>
+    <div
+      className="modal-back"
+      role="button"
+      tabIndex={0}
+      aria-label="Close dialog"
+      onClick={onCancel}
+      onKeyDown={handleBackdropKey}
+    >
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={headingId}
+        ref={modalRef}
+        onClick={e => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
+      >
+        <h3 id={headingId}>Download AI model?</h3>
         <p style={{ margin: 0, color: "var(--fg-muted)", lineHeight: 1.5 }}>
           <strong style={{ color: "var(--fg)" }}>{model.label}</strong> will download ~{sizeLabel}{" "}
           and run fully on your device. No data leaves your machine, and the model
@@ -515,7 +566,12 @@ function SwotApp() {
         />
       )}
 
-      {toast && <div className="toast">{toast}</div>}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className={toast ? "toast" : "toast toast-hidden"}
+      >{toast || ""}</div>
 
       {/* Download progress bar — fixed to viewport bottom */}
       {isDownloading && <WebLLMProgressBar progress={aiState.progress} />}

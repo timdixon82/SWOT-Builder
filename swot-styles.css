@@ -494,10 +494,15 @@ body { font-family: var(--font-sans); }
   border: 1px solid transparent;
 }
 .tag-pill .x {
-  cursor: pointer;
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
   opacity: 0.5;
   font-size: 14px;
   line-height: 1;
+  cursor: pointer;
+  color: inherit;
 }
 .tag-pill .x:hover { opacity: 1; }
 .tag-input {
@@ -804,6 +809,7 @@ body { font-family: var(--font-sans); }
   transition: opacity 120ms;
 }
 .item-card:hover .item-actions { opacity: 1; }
+.item-card:focus-within .item-actions { opacity: 1; }
 .item-card .iconbtn {
   appearance: none;
   border: none;
@@ -983,6 +989,21 @@ body { font-family: var(--font-sans); }
   z-index: 200;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   animation: toast-in 200ms ease;
+}
+/* Live region stays in DOM when empty so screen readers see updates;
+   visually hide it when there is no message. */
+.toast.toast-hidden {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  box-shadow: none;
+  animation: none;
 }
 @keyframes toast-in {
   from { opacity: 0; transform: translate(-50%, 12px); }
