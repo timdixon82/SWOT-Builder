@@ -32,7 +32,10 @@ jobs:
           node-version: lts/*
 
       - name: Install accessibility tools
-        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1
+        run: npm install -g pa11y@9.1.1 @axe-core/cli@4.11.3 wait-on@8.0.1 browser-driver-manager@2.0.1
+
+      - name: Install matching ChromeDriver for axe-core
+        run: npx browser-driver-manager install chrome
 
       - name: Build CI pa11y config with system Chrome path
         run: |
