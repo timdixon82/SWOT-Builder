@@ -1,0 +1,17 @@
+{
+  "_comment": [
+    "Accessibility runner configuration for Pa11y.",
+    "SWOT Builder has 25 accessibility findings documented in docs/accessibility.md.",
+    "All 25 are deferred to Phase 2 remediation. They are catalogued in",
+    "docs/accessibility.md and tracked in todo.md.",
+    "The CI accessibility workflow runs Pa11y against the static HTML shell only,",
+    "because the app requires browser-side Babel compilation to render. Full",
+    "rendered-interface testing is Carol's responsibility.",
+    "The chromeLaunchConfig is required for CI runners that disable",
+    "unprivileged user namespaces."
+  ],
+  "chromeLaunchConfig": {
+    "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+  },
+  "ignore": []
+}
