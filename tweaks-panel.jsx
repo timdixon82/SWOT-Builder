@@ -1,4 +1,4 @@
-
+/* exported useTweaks, TweaksPanel, TweakSection, TweakRow, TweakSlider, TweakRadio, TweakColor, TweakToggle, TweakNumber, TweakButton */
 // tweaks-panel.jsx
 // Reusable Tweaks shell + form-control helpers.
 //
@@ -406,6 +406,7 @@ function __twkIsLight(hex) {
   return r * 299 + g * 587 + b * 114 > 148000;
 }
 
+// eslint-disable-next-line no-unused-vars -- used by TweakColor below
 const __TwkCheck = ({ light }) => (
   <svg viewBox="0 0 14 14" aria-hidden="true">
     <path d="M3 7.2 5.8 10 11 4.2" fill="none" strokeWidth="2.2"
