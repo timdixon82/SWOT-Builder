@@ -288,7 +288,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
               />
               <div style={{display: "flex", gap: "var(--space-2)", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap"}}>
                 <small style={{color: "var(--fg-muted)"}}>
-                  ⌘/Ctrl + Enter to submit
+                  Cmd/Ctrl + Enter to submit
                 </small>
                 <div style={{display: "flex", gap: "var(--space-2)"}}>
                   <button className="button btn-ghost btn-sm" onClick={skipQuestion} disabled={loadingQ || analysing}>
