@@ -1,4 +1,5 @@
 /* swot-app.jsx — top-level controller, AI badge, download consent flow. */
+/* exported Logo, Stepper, ThemeToggle, DownloadConsentModal, WebLLMProgressBar, AIBadge, AIUnavailableNudge, AppTweaksPanel, SwotApp */
 
 const { useState: useS_A, useEffect: useE_A, useRef: useR_A } = React;
 
@@ -9,7 +10,7 @@ const AUTO_DOWNLOAD_THRESHOLD_MB = 50;
 function Logo() {
   return (
     <div className="logo" aria-label="SWOT Builder">
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="6"  y="6"  width="24" height="24" rx="3" fill="#FFFFFF"/>
         <rect x="34" y="6"  width="24" height="24" rx="3" fill="#FF7C00"/>
         <rect x="6"  y="34" width="24" height="24" rx="3" fill="#FF7C00"/>
@@ -39,7 +40,7 @@ function ThemeToggle() {
   function toggle() {
     const next = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("td-theme", next); } catch(e) {}
+    try { localStorage.setItem("td-theme", next); } catch(_e) {}
     setTheme(next);
   }
   return (
@@ -218,6 +219,8 @@ function WebLLMProgressBar({ progress }) {
 function AIBadge({ aiState, onRequestModel }) {
   const [open, setOpen] = useS_A(false);
   const ref = useR_A(null);
+  const triggerRef = useR_A(null);
+  const menuRef = useR_A(null);
 
   // Close dropdown on outside click
   useE_A(() => {
@@ -226,6 +229,31 @@ function AIBadge({ aiState, onRequestModel }) {
     document.addEventListener('mousedown', onDown);
     return () => document.removeEventListener('mousedown', onDown);
   }, [open]);
+
+  // Focus first menu item when dropdown opens
+  useE_A(() => {
+    if (!open || !menuRef.current) return;
+    const first = menuRef.current.querySelector('[role="menuitem"]');
+    if (first) first.focus();
+  }, [open]);
+
+  // Arrow-key and Escape navigation within the menu
+  function onMenuKeyDown(e) {
+    if (!menuRef.current) return;
+    const items = Array.from(menuRef.current.querySelectorAll('[role="menuitem"]'));
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      items[(idx + 1) % items.length]?.focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      items[(idx - 1 + items.length) % items.length]?.focus();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    }
+  }
 
   const { type, status } = aiState;
   const canPick = status === 'unavailable' && window.LocalAI.hasWebGPU();
@@ -254,6 +282,7 @@ function AIBadge({ aiState, onRequestModel }) {
   return (
     <div style={{ position: "relative" }} ref={ref}>
       <button
+        ref={triggerRef}
         onClick={() => canPick && setOpen(o => !o)}
         title={
           status === 'ready' && type === 'window-ai' ? "Chrome's on-device AI (Gemini Nano)" :
@@ -280,7 +309,8 @@ function AIBadge({ aiState, onRequestModel }) {
           ...chipStyle,
         }}
         aria-expanded={open}
-        aria-haspopup={canPick ? "listbox" : undefined}
+        aria-haspopup={canPick ? "menu" : undefined}
+        aria-describedby={status === 'ready' ? "ai-badge-desc" : undefined}
       >
         <span style={{
           width: 7, height: 7, borderRadius: "50%",
@@ -291,6 +321,16 @@ function AIBadge({ aiState, onRequestModel }) {
         }} />
         {label}{canPick && <span aria-hidden="true"> ▾</span>}
       </button>
+      {/* Visually-hidden description for ready state (replaces title-only info) */}
+      {status === 'ready' && (
+        <span id="ai-badge-desc" style={{
+          position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+          overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", borderWidth: 0,
+        }}>
+          {type === 'window-ai' ? "Chrome's on-device AI (Gemini Nano)" :
+           type === 'webllm'    ? "AI model running in your browser via WebGPU" : ""}
+        </span>
+      )}
 
       {/* Model picker dropdown */}
       {open && (
@@ -308,7 +348,7 @@ function AIBadge({ aiState, onRequestModel }) {
           display: "flex",
           flexDirection: "column",
           gap: "var(--space-3)",
-        }} role="listbox" aria-label="Choose AI model">
+        }} role="menu" aria-label="Choose AI model" ref={menuRef} onKeyDown={onMenuKeyDown}>
           <p style={{ margin: 0, fontSize: "var(--text-sm)", fontWeight: 700, color: "var(--fg)" }}>
             Run AI in your browser
           </p>
@@ -324,7 +364,7 @@ function AIBadge({ aiState, onRequestModel }) {
             return (
               <button
                 key={m.id}
-                role="option"
+                role="menuitem"
                 className="button btn-secondary btn-sm"
                 style={{
                   flexDirection: "column",
@@ -348,7 +388,8 @@ function AIBadge({ aiState, onRequestModel }) {
             );
           })}
 
-          <button className="button btn-ghost btn-sm" style={{ alignSelf: "flex-end", marginTop: 2 }}
+          <button className="button btn-ghost btn-sm" role="menuitem"
+            style={{ alignSelf: "flex-end", marginTop: 2 }}
             onClick={() => setOpen(false)}>
             Continue without AI
           </button>
@@ -397,6 +438,7 @@ const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 function AppTweaksPanel({ boardStyle, onBoardStyle }) {
+  // eslint-disable-next-line no-unused-vars -- used as JSX tags below
   const { TweaksPanel, useTweaks, TweakSection, TweakRadio } = window;
   const [t, setTweak] = useTweaks(DEFAULT_TWEAKS);
 
@@ -466,7 +508,7 @@ function SwotApp() {
     try {
       await window.LocalAI.loadWebLLM(model.id);
       showToast("AI model ready — reload interview for AI questions!");
-    } catch(e) {
+    } catch(_e) {
       showToast("Download failed. WebGPU may not be supported in this browser.");
     }
   }
@@ -535,7 +577,7 @@ function SwotApp() {
       {step === "interview" && aiUnavailable && (
         <AIUnavailableNudge
           hasWebGPU={window.LocalAI.hasWebGPU()}
-          onLoadModel={() => document.querySelector('[aria-haspopup="listbox"]')?.click()}
+          onLoadModel={() => document.querySelector('[aria-haspopup="menu"]')?.click()}
         />
       )}
 

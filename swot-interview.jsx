@@ -1,5 +1,6 @@
 /* swot-interview.jsx — interview view with sidebar tally.
  * Exports <SwotInterview> to window. */
+/* exported SparkleIcon, EditIcon, ConfidencePicker, TagEditor, BucketPicker, TallySidebar, SwotInterview */
 
 const { useState: useS_I, useEffect: useE_I, useRef: useR_I } = React;
 
@@ -288,7 +289,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
               />
               <div style={{display: "flex", gap: "var(--space-2)", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap"}}>
                 <small style={{color: "var(--fg-muted)"}}>
-                  ⌘/Ctrl + Enter to submit
+                  Cmd/Ctrl + Enter to submit
                 </small>
                 <div style={{display: "flex", gap: "var(--space-2)"}}>
                   <button className="button btn-ghost btn-sm" onClick={skipQuestion} disabled={loadingQ || analysing}>

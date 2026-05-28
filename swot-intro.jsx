@@ -76,21 +76,23 @@ function SwotIntro({ onStart }) {
             value={scope}
             onChange={e => setScope(e.target.value)}
             style={{ appearance: "auto", cursor: "pointer" }}
+            aria-describedby="scope-hint"
           >
             {SCOPE_OPTIONS.map(o => (
               <option key={o.id} value={o.id}>{o.label}</option>
             ))}
           </select>
-          <p className="field-hint">Helps me tailor the questions.</p>
+          <p className="field-hint" id="scope-hint">Helps me tailor the questions.</p>
         </div>
 
         <div className="field">
-          <label className="field-label" htmlFor="title">Title for the finished board <span style={{fontWeight: 400, color: "var(--fg-muted)"}}>(optional)</span></label>
+          <label className="field-label" htmlFor="title">Title for the finished board <span id="title-hint" style={{fontWeight: 400, color: "var(--fg-muted)"}}>(optional)</span></label>
           <input
             id="title" className="input"
             placeholder={subject ? `SWOT: ${subject}` : "Auto-generated from subject"}
             value={title}
             onChange={e => setTitle(e.target.value)}
+            aria-describedby="title-hint"
           />
         </div>
 

@@ -1,5 +1,6 @@
 /* swot-board.jsx — finished SWOT board with edit/export.
  * Exports <SwotBoard> to window. */
+/* exported ConfDots, AddItemModal, QuadrantCell, StylePicker, SwotBoard */
 
 const { useState: useS_B, useEffect: useE_B, useRef: useR_B } = React;
 
@@ -288,7 +289,7 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
         try {
           await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
           showToast("Image copied to clipboard");
-        } catch (e) {
+        } catch (_e) {
           // Fallback: download
           const a = document.createElement("a");
           a.href = URL.createObjectURL(blob);
@@ -297,8 +298,8 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
           showToast("Image downloaded (clipboard not available)");
         }
       }, "image/png");
-    } catch (e) {
-      console.error(e);
+    } catch (_e) {
+      console.error(_e);
       showToast("Image export failed");
     }
   }
@@ -339,7 +340,7 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
             />
           ))}
         </div>
-        <div className="swot-watermark">Built with SWOT Builder · {totalCount} item{totalCount===1?"":"s"}</div>
+        <div className="swot-watermark" aria-hidden="true">Built with SWOT Builder · {totalCount} item{totalCount===1?"":"s"}</div>
       </div>
 
       {editing ? (
