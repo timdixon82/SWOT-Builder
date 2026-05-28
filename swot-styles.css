@@ -35,6 +35,25 @@
 }
 
 /* ---------------------------------------------------------- */
+/* Skip link                                                   */
+/* ---------------------------------------------------------- */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary, var(--accent));
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 1000;
+  border-radius: 0 0 4px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* ---------------------------------------------------------- */
 /* Shell + header                                              */
 /* ---------------------------------------------------------- */
 body { font-family: var(--font-sans); }
@@ -200,7 +219,7 @@ body { font-family: var(--font-sans); }
 }
 .input:focus, .textarea:focus {
   border-color: var(--accent);
-  outline: none;
+  outline-color: transparent;
   box-shadow: 0 0 0 4px var(--accent-subtle);
 }
 .textarea { resize: vertical; min-height: 120px; }

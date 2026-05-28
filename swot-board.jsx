@@ -138,8 +138,8 @@ function ItemEditorModal({ item, onClose, onSave, onDelete }) {
         </div>
 
         <div className="field">
-          <label className="field-label">Confidence</label>
-          <div className="confidence-row">
+          <span id="item-editor-confidence-label" className="field-label">Confidence</span>
+          <div className="confidence-row" role="group" aria-labelledby="item-editor-confidence-label">
             {[{id:"low",label:"Low"},{id:"med",label:"Medium"},{id:"high",label:"High"}].map(l => (
               <button key={l.id} type="button"
                 className={"conf-pill" + (conf === l.id ? " active" : "")}
@@ -308,7 +308,7 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
   }
 
   return (
-    <main className="board-page">
+    <main id="main-content" className="board-page">
       <div className="board-titlebar">
         <div className="title-block">
           <h2>{session.title || "SWOT Analysis"}</h2>

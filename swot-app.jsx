@@ -27,7 +27,7 @@ function Stepper({ step }) {
     <div className="stepper">
       <span>Step {Math.max(idx, 0) + 1} of 3</span>
       {dots.map((d, i) => (
-        <span key={d} className={"dot" + (i === idx ? " active" : i < idx ? " done" : "")} />
+        <span key={d} aria-hidden="true" className={"dot" + (i === idx ? " active" : i < idx ? " done" : "")} />
       ))}
     </div>
   );
@@ -43,7 +43,7 @@ function ThemeToggle() {
     setTheme(next);
   }
   return (
-    <button className="button btn-ghost btn-icon" onClick={toggle} aria-label="Toggle theme" title="Toggle theme">
+    <button className="button btn-ghost btn-icon" onClick={toggle} aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"} title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
       {theme === "dark" ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
@@ -246,7 +246,7 @@ function AIBadge({ aiState, onRequestModel }) {
     dotColor = "var(--pass)";
   } else {
     // unavailable
-    label = canPick ? "Load AI model ▾" : "Manual mode";
+    label = canPick ? "Load AI model" : "Manual mode";
     dotColor = "var(--border)";
     if (canPick) chipStyle.cursor = "pointer";
   }
@@ -289,7 +289,7 @@ function AIBadge({ aiState, onRequestModel }) {
           animation: status === 'loading' || status === 'starting'
             ? "pulse 1.2s infinite ease-in-out" : "none",
         }} />
-        {label}
+        {label}{canPick && <span aria-hidden="true"> ▾</span>}
       </button>
 
       {/* Model picker dropdown */}
@@ -384,7 +384,7 @@ function AIUnavailableNudge({ hasWebGPU, onLoadModel }) {
         </button>
       )}
       <button className="button btn-ghost btn-sm" onClick={() => setDismissed(true)}
-        aria-label="Dismiss">×</button>
+        aria-label="Dismiss">Dismiss</button>
     </div>
   );
 }

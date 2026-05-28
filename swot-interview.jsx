@@ -25,8 +25,8 @@ function ConfidencePicker({ value, onChange }) {
     { id: "high",   label: "High" },
   ];
   return (
-    <div className="confidence-row">
-      <span className="label">Confidence</span>
+    <div className="confidence-row" role="group" aria-labelledby="confidence-label">
+      <span id="confidence-label" className="label">Confidence</span>
       {levels.map(l => (
         <button key={l.id}
           type="button"
@@ -56,6 +56,7 @@ function TagEditor({ tags, onChange }) {
       ))}
       <input
         className="tag-input"
+        aria-label="Add tag"
         placeholder="+ tag"
         value={draft}
         onChange={e => setDraft(e.target.value)}
@@ -76,6 +77,7 @@ function BucketPicker({ value, suggested, onPick }) {
         <button
           key={b.key}
           type="button"
+          aria-label={suggested === b.key ? `${b.short} (AI suggestion)` : b.short}
           className={
             "b-" + b.key.toLowerCase() +
             (value === b.key ? " selected" : "") +
@@ -83,7 +85,7 @@ function BucketPicker({ value, suggested, onPick }) {
           }
           onClick={() => onPick(b.key)}
         >
-          <span className="dotmark"></span>
+          <span className="dotmark" aria-hidden="true"></span>
           <span>{b.short}</span>
         </button>
       ))}
@@ -242,7 +244,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
   const totalCount = window.BUCKETS.reduce((n, b) => n + (swot[b.key]?.length || 0), 0);
 
   return (
-    <main className="interview">
+    <main id="main-content" className="interview">
       <div className="interview-main">
 
         {/* Question card */}
@@ -252,9 +254,9 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
             <span>{session.subject}</span>
           </div>
           {loadingQ ? (
-            <p className="question-skeleton">
+            <p className="question-skeleton" role="status" aria-live="polite">
               Thinking up a good opener
-              <span className="dot-pulse"><span></span><span></span><span></span></span>
+              <span className="dot-pulse" aria-hidden="true"><span></span><span></span><span></span></span>
             </p>
           ) : (
             <h2 className="question">{question}</h2>
@@ -295,7 +297,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
                   <button className="button btn-primary" onClick={submitAnswer}
                     disabled={!answer.trim() || loadingQ || analysing}>
                     {analysing ? (
-                      <>Analysing <span className="dot-pulse"><span></span><span></span><span></span></span></>
+                      <>Analysing <span className="dot-pulse" aria-hidden="true"><span></span><span></span><span></span></span></>
                     ) : "Submit answer"}
                   </button>
                 </div>
@@ -318,6 +320,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
                 <div className="title-edit-row">
                   <input
                     className="input"
+                    aria-label="Item title"
                     value={editedTitle}
                     onChange={e => setEditedTitle(e.target.value)}
                     placeholder="Item title"
