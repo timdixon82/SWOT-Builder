@@ -547,7 +547,7 @@ function SwotApp() {
       {step === "interview" && aiUnavailable && (
         <AIUnavailableNudge
           hasWebGPU={window.LocalAI.hasWebGPU()}
-          onLoadModel={() => document.querySelector('[aria-haspopup="listbox"]')?.click()}
+          onLoadModel={() => document.querySelector('[aria-haspopup="menu"]')?.click()}
         />
       )}
 

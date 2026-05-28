@@ -58,7 +58,7 @@ const __TWEAKS_STYLE = `
   .twk-hd{display:flex;align-items:center;justify-content:space-between;
     padding:10px 8px 10px 14px;}
   .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
-  .twk-x{appearance:none;border:0;background:transparent;color:#5a5854;
+  .twk-x{appearance:none;border:0;background:transparent;color:#4d4b45;
     width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
   .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
   .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
@@ -75,10 +75,10 @@ const __TWEAKS_STYLE = `
   .twk-lbl{display:flex;justify-content:space-between;align-items:baseline;
     color:#4d4b45}
   .twk-lbl>span:first-child{font-weight:500}
-  .twk-val{color:#5a5854;font-variant-numeric:tabular-nums}
+  .twk-val{color:#4d4b45;font-variant-numeric:tabular-nums}
 
   .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-    color:#5a5854;padding:10px 0 0}
+    color:#4d4b45;padding:10px 0 0}
   .twk-sect:first-child{padding-top:0}
 
   .twk-field{appearance:none;box-sizing:border-box;width:100%;min-width:0;height:26px;padding:0 8px;
