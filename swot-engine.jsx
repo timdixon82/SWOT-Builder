@@ -18,10 +18,10 @@
 // ---------------------------------------------------------------------
 const STORAGE_KEY = "swot-builder-v1";
 function loadState() {
-  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch(_e) { return null; }
 }
-function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(e) {} }
-function clearState() { try { localStorage.removeItem(STORAGE_KEY); } catch(e) {} }
+function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(_e) {} }
+function clearState() { try { localStorage.removeItem(STORAGE_KEY); } catch(_e) {} }
 
 // ---------------------------------------------------------------------
 // Defaults & utilities
@@ -77,14 +77,14 @@ function extractJson(raw) {
     .replace(/^```(?:json)?/i, "").replace(/```\s*$/i, "").trim();
   const firstBrace = text.search(/[\{\[]/);
   if (firstBrace > 0) text = text.slice(firstBrace);
-  try { return JSON.parse(text); } catch(e) {}
+  try { return JSON.parse(text); } catch(_e) {}
   let depth = 0, end = -1;
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
     if (c === "{" || c === "[") depth++;
     else if (c === "}" || c === "]") { depth--; if (depth === 0) { end = i + 1; break; } }
   }
-  if (end > 0) { try { return JSON.parse(text.slice(0, end)); } catch(e) {} }
+  if (end > 0) { try { return JSON.parse(text.slice(0, end)); } catch(_e) {} }
   return null;
 }
 
@@ -121,7 +121,7 @@ const LocalAI = (function () {
 
   function emit() {
     const state = { type: _type, status: _status, progress: _progress };
-    _listeners.forEach(fn => { try { fn(state); } catch(e) {} });
+    _listeners.forEach(fn => { try { fn(state); } catch(_e) {} });
   }
 
   // ── Chrome Prompt API ────────────────────────────────────────────────
@@ -147,7 +147,7 @@ const LocalAI = (function () {
         _session = await window.ai.languageModel.create();
       }
       return true;
-    } catch(e) { return false; }
+    } catch(_e) { return false; }
   }
 
   // ── WebLLM (WebGPU) ──────────────────────────────────────────────────
@@ -224,7 +224,7 @@ const LocalAI = (function () {
   // ── Public surface ───────────────────────────────────────────────────
   function onStatus(fn) {
     _listeners.push(fn);
-    try { fn({ type: _type, status: _status, progress: _progress }); } catch(e) {}
+    try { fn({ type: _type, status: _status, progress: _progress }); } catch(_e) {}
   }
   function getStatus() { return { type: _type, status: _status, progress: _progress }; }
   function isReady()   { return _status === 'ready'; }
@@ -277,7 +277,7 @@ async function aiProcessAnswer({ subject, scope, history, questionAsked, answerG
 
   let raw = null;
   if (window.LocalAI.isReady()) {
-    try { raw = await window.LocalAI.complete(prompt); } catch(e) { raw = null; }
+    try { raw = await window.LocalAI.complete(prompt); } catch(_e) { raw = null; }
   }
 
   // Offline / error fallback — return user's answer verbatim; user picks bucket.
@@ -342,7 +342,7 @@ async function aiOpeningQuestion({ subject, scope }) {
   try {
     const raw = await window.LocalAI.complete(prompt);
     return (raw || "").trim().replace(/^["']|["']$/g, "") || fallback;
-  } catch(e) { return fallback; }
+  } catch(_e) { return fallback; }
 }
 
 // ---------------------------------------------------------------------

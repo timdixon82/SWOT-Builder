@@ -1,5 +1,6 @@
 /* swot-interview.jsx — interview view with sidebar tally.
  * Exports <SwotInterview> to window. */
+/* exported SparkleIcon, EditIcon, ConfidencePicker, TagEditor, BucketPicker, TallySidebar, SwotInterview */
 
 const { useState: useS_I, useEffect: useE_I, useRef: useR_I } = React;
 
