@@ -246,7 +246,7 @@ function AIBadge({ aiState, onRequestModel }) {
     dotColor = "var(--pass)";
   } else {
     // unavailable
-    label = canPick ? "Load AI model ▾" : "Manual mode";
+    label = canPick ? "Load AI model" : "Manual mode";
     dotColor = "var(--border)";
     if (canPick) chipStyle.cursor = "pointer";
   }
@@ -289,7 +289,7 @@ function AIBadge({ aiState, onRequestModel }) {
           animation: status === 'loading' || status === 'starting'
             ? "pulse 1.2s infinite ease-in-out" : "none",
         }} />
-        {label}
+        {label}{canPick && <span aria-hidden="true"> ▾</span>}
       </button>
 
       {/* Model picker dropdown */}
