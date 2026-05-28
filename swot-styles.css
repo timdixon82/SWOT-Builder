@@ -861,7 +861,7 @@ body { font-family: var(--font-sans); }
 .conf-dots .cd.on { background: var(--fg); }
 .conf-dots-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--text-xs);
   color: var(--fg-muted);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -951,7 +951,7 @@ body { font-family: var(--font-sans); }
 .swot-grid.style-exec .quadrant-head .qmeta { color: var(--white); }
 .swot-grid.style-exec .quadrant-head .qmeta { opacity: 0.7; }
 .swot-grid.style-exec .quadrant-head .qletter { background: transparent; border: 2px solid currentColor; }
-.swot-grid.style-exec .quadrant.s .quadrant-head .qletter { color: var(--s-edge); border-color: var(--s-edge); }
+.swot-grid.style-exec .quadrant.s .quadrant-head .qletter { color: #ffffff; border-color: #ffffff; }
 .swot-grid.style-exec .quadrant.w .quadrant-head .qletter { color: #fca5a5; border-color: #fca5a5; }
 .swot-grid.style-exec .quadrant.o .quadrant-head .qletter { color: var(--blue); border-color: var(--blue); }
 .swot-grid.style-exec .quadrant.t .quadrant-head .qletter { color: var(--orange); border-color: var(--orange); }
@@ -1032,10 +1032,14 @@ body { font-family: var(--font-sans); }
 /* ---------------------------------------------------------- */
 /* Print                                                       */
 /* ---------------------------------------------------------- */
+/* Hidden on screen; visible in print for heading hierarchy */
+.print-only { display: none; }
+
 @media print {
   body { background: #fff; }
   .app-header, .header-actions, .board-titlebar .actions,
   .tweaks-panel, .stepper, .swot-watermark, .item-actions { display: none !important; }
+  .print-only { display: block; font-size: 1.25rem; font-weight: 700; margin: 0 0 0.5rem; }
   .board-page { padding: 0; max-width: none; }
   .swot-paper { box-shadow: none; border: 1px solid #000; border-radius: 0; }
   .swot-grid { min-height: 90vh; }

@@ -9,7 +9,7 @@ const AUTO_DOWNLOAD_THRESHOLD_MB = 50;
 function Logo() {
   return (
     <div className="logo" aria-label="SWOT Builder">
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="6"  y="6"  width="24" height="24" rx="3" fill="#FFFFFF"/>
         <rect x="34" y="6"  width="24" height="24" rx="3" fill="#FF7C00"/>
         <rect x="6"  y="34" width="24" height="24" rx="3" fill="#FF7C00"/>
@@ -280,7 +280,8 @@ function AIBadge({ aiState, onRequestModel }) {
           ...chipStyle,
         }}
         aria-expanded={open}
-        aria-haspopup={canPick ? "listbox" : undefined}
+        aria-haspopup={canPick ? "menu" : undefined}
+        aria-describedby={status === 'ready' ? "ai-badge-desc" : undefined}
       >
         <span style={{
           width: 7, height: 7, borderRadius: "50%",
@@ -291,6 +292,16 @@ function AIBadge({ aiState, onRequestModel }) {
         }} />
         {label}{canPick && <span aria-hidden="true"> ▾</span>}
       </button>
+      {/* Visually-hidden description for ready state (replaces title-only info) */}
+      {status === 'ready' && (
+        <span id="ai-badge-desc" style={{
+          position: "absolute", width: 1, height: 1, padding: 0, margin: -1,
+          overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", borderWidth: 0,
+        }}>
+          {type === 'window-ai' ? "Chrome's on-device AI (Gemini Nano)" :
+           type === 'webllm'    ? "AI model running in your browser via WebGPU" : ""}
+        </span>
+      )}
 
       {/* Model picker dropdown */}
       {open && (
@@ -308,7 +319,7 @@ function AIBadge({ aiState, onRequestModel }) {
           display: "flex",
           flexDirection: "column",
           gap: "var(--space-3)",
-        }} role="listbox" aria-label="Choose AI model">
+        }} role="menu" aria-label="Choose AI model">
           <p style={{ margin: 0, fontSize: "var(--text-sm)", fontWeight: 700, color: "var(--fg)" }}>
             Run AI in your browser
           </p>
@@ -324,7 +335,7 @@ function AIBadge({ aiState, onRequestModel }) {
             return (
               <button
                 key={m.id}
-                role="option"
+                role="menuitem"
                 className="button btn-secondary btn-sm"
                 style={{
                   flexDirection: "column",
@@ -348,7 +359,8 @@ function AIBadge({ aiState, onRequestModel }) {
             );
           })}
 
-          <button className="button btn-ghost btn-sm" style={{ alignSelf: "flex-end", marginTop: 2 }}
+          <button className="button btn-ghost btn-sm" role="menuitem"
+            style={{ alignSelf: "flex-end", marginTop: 2 }}
             onClick={() => setOpen(false)}>
             Continue without AI
           </button>

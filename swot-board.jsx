@@ -339,7 +339,7 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
             />
           ))}
         </div>
-        <div className="swot-watermark">Built with SWOT Builder · {totalCount} item{totalCount===1?"":"s"}</div>
+        <div className="swot-watermark" aria-hidden="true">Built with SWOT Builder · {totalCount} item{totalCount===1?"":"s"}</div>
       </div>
 
       {editing ? (
