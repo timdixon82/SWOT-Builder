@@ -308,7 +308,7 @@ function SwotBoard({ session, swot, onUpdateItem, onDeleteItem, onAddItem, onRes
   }
 
   return (
-    <main className="board-page">
+    <main id="main-content" className="board-page">
       <div className="board-titlebar">
         <div className="title-block">
           <h2>{session.title || "SWOT Analysis"}</h2>

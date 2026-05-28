@@ -32,7 +32,7 @@ function SwotIntro({ onStart }) {
   const canStart = subject.trim().length > 1;
 
   return (
-    <div className="intro">
+    <main id="main-content" className="intro">
       <div className="intro-card fade-in">
         <p className="intro-eyebrow">SWOT Builder · Guided interview</p>
         <h2>Let&rsquo;s map it out together.</h2>
@@ -104,7 +104,7 @@ function SwotIntro({ onStart }) {
           </button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
