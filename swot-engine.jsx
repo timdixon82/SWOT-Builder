@@ -5,8 +5,7 @@
  *   2. WebLLM (WebGPU)  — Chrome/Edge 113+; model downloads to browser cache
  *   3. Manual / offline — always works; user routes answers to quadrants themselves
  *
- * Download policy: models ≤ 50 MB start automatically.
- *                  models > 50 MB require explicit user consent first.
+ * Download policy: every model download requires explicit user consent (Q27B).
  *
  * Exposes on window: LocalAI, WEBLLM_MODELS, STORAGE_KEY, loadState, saveState,
  *   clearState, uid, BUCKETS, BUCKET_BY_KEY, newEmptySwot,
@@ -39,9 +38,9 @@ const BUCKET_BY_KEY = Object.fromEntries(BUCKETS.map(b => [b.key, b]));
 function newEmptySwot() { return { S: [], W: [], O: [], T: [] }; }
 
 // ---------------------------------------------------------------------
-// WebLLM model catalogue — sizeMB is the approximate download size.
-// The 50 MB threshold is checked in the app layer; engine doesn't care.
-// Pin the CDN URL to a known-good version to avoid surprise API breaks.
+// WebLLM model catalogue — sizeMB is the approximate download size shown in
+// the consent dialog. Pin the CDN URL to a known-good version to avoid
+// surprise API breaks.
 // ---------------------------------------------------------------------
 const WEBLLM_MODELS = [
   {
@@ -243,9 +242,18 @@ window.LocalAI = LocalAI;
 LocalAI.init(); // Fire-and-forget on script load
 
 // ---------------------------------------------------------------------
+// Coach tone map — used by both aiProcessAnswer and aiOpeningQuestion.
+// ---------------------------------------------------------------------
+const TONE = {
+  friendly: "Tone: warm, encouraging, and conversational.",
+  concise:  "Tone: brief and direct — short sentences, no filler.",
+  playful:  "Tone: light-hearted and playful, with a little wit.",
+};
+
+// ---------------------------------------------------------------------
 // AI: process answer → suggested SWOT item + next question
 // ---------------------------------------------------------------------
-async function aiProcessAnswer({ subject, scope, history, questionAsked, answerGiven, existingCounts }) {
+async function aiProcessAnswer({ subject, scope, history, questionAsked, answerGiven, existingCounts, coachTone = 'friendly' }) {
   const sys = [
     "You are a friendly SWOT analysis coach helping the user build a SWOT for a specific subject.",
     "Analyse the user's answer to the last question, then ask the next best question.",
@@ -260,6 +268,7 @@ async function aiProcessAnswer({ subject, scope, history, questionAsked, answerG
     "Set item to null if the answer is empty or off-topic — still produce a next_question.",
     "Bucket guide: S = internal helpful (assets/skills the subject HAS). W = internal harmful (gaps/limitations). O = external helpful (trends/openings). T = external harmful (risks/competitors).",
     "Reword the title concisely — capture the essence, do not echo the user's full answer.",
+    TONE[coachTone] || TONE.friendly,
   ].join("\n");
 
   const ctxLines = [];
@@ -325,7 +334,7 @@ async function aiProcessAnswer({ subject, scope, history, questionAsked, answerG
 // ---------------------------------------------------------------------
 // AI: opening question
 // ---------------------------------------------------------------------
-async function aiOpeningQuestion({ subject, scope }) {
+async function aiOpeningQuestion({ subject, scope, coachTone = 'friendly' }) {
   const fallback = `Let's start with what's going well — what do you see as the biggest strength of "${subject || "your subject"}" right now?`;
   if (!window.LocalAI.isReady()) return fallback;
 
@@ -335,6 +344,7 @@ async function aiOpeningQuestion({ subject, scope }) {
     "Be specific to the subject. One sentence only. No preamble.",
     "Subject: " + (subject || "(unspecified)"),
     scope ? "Scope: " + scope : "",
+    TONE[coachTone] || TONE.friendly,
     "",
     "Output ONLY the question text. No JSON, no markdown.",
   ].filter(Boolean).join("\n");

@@ -127,7 +127,7 @@ function TallySidebar({ swot, onJumpToBoard }) {
   );
 }
 
-function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
+function SwotInterview({ session, swot, coachTone = "friendly", onAddItem, onFinish, onBack }) {
   // Interview state
   const [question, setQuestion] = useS_I(session.lastQuestion || "");
   const [loadingQ, setLoadingQ] = useS_I(!session.lastQuestion);
@@ -148,7 +148,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
   useE_I(() => {
     if (!question) {
       setLoadingQ(true);
-      window.aiOpeningQuestion({ subject: session.subject, scope: session.scope })
+      window.aiOpeningQuestion({ subject: session.subject, scope: session.scope, coachTone })
         .then(q => { setQuestion(q); setLoadingQ(false); setTimeout(() => answerRef.current?.focus(), 50); });
     } else {
       setTimeout(() => answerRef.current?.focus(), 50);
@@ -163,6 +163,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
     window.aiProcessAnswer({
       subject: session.subject,
       scope: session.scope,
+      coachTone,
       history,
       questionAsked: question,
       answerGiven: trimmed,
@@ -230,6 +231,7 @@ function SwotInterview({ session, swot, onAddItem, onFinish, onBack }) {
     window.aiProcessAnswer({
       subject: session.subject,
       scope: session.scope,
+      coachTone,
       history: newHistory,
       questionAsked: question,
       answerGiven: "(user skipped — please ask a different question, ideally a different quadrant)",
