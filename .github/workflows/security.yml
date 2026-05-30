@@ -26,7 +26,7 @@ jobs:
       - name: Semgrep
         run: |
           pip install semgrep
-          semgrep ci
+          semgrep scan --config p/default --error
 
   trivy:
     runs-on: ubuntu-latest
