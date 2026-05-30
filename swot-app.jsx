@@ -3,9 +3,6 @@
 
 const { useState: useS_A, useEffect: useE_A, useRef: useR_A } = React;
 
-// Models < this threshold (MB) download automatically; larger ones need consent.
-const AUTO_DOWNLOAD_THRESHOLD_MB = 50;
-
 // ── Logo ─────────────────────────────────────────────────────────────────────
 function Logo() {
   return (
@@ -59,7 +56,7 @@ function ThemeToggle() {
 }
 
 // ── Download consent modal ───────────────────────────────────────────────────
-// Shown when user selects a model that exceeds AUTO_DOWNLOAD_THRESHOLD_MB.
+// Shown before every WebLLM model download — explicit consent is always required.
 function DownloadConsentModal({ model, onConfirm, onCancel }) {
   const sizeLabel = model.sizeMB >= 1000
     ? `${(model.sizeMB / 1000).toFixed(1)} GB`
@@ -492,10 +489,20 @@ function SwotApp() {
   const [toast,      setToast]     = useS_A(null);
   const [aiState,    setAiState]   = useS_A(window.LocalAI.getStatus());
   const [consentModel, setConsentModel] = useS_A(null); // model pending user consent
+  const [coachTone, setCoachTone] = useS_A(DEFAULT_TWEAKS.coach_tone);
   const toastTimer = useR_A(null);
 
   // Subscribe to AI status changes
   useE_A(() => { window.LocalAI.onStatus(s => setAiState({ ...s })); }, []);
+
+  // Keep coachTone in sync with the tweaks panel
+  useE_A(() => {
+    function onTweakChange(e) {
+      if (e.detail?.coach_tone) setCoachTone(e.detail.coach_tone);
+    }
+    window.addEventListener('tweakchange', onTweakChange);
+    return () => window.removeEventListener('tweakchange', onTweakChange);
+  }, []);
 
   // Persist state
   useE_A(() => { window.saveState({ step, session, swot, boardStyle }); }, [step, session, swot, boardStyle]);
@@ -517,11 +524,7 @@ function SwotApp() {
   }
 
   function handleRequestModel(model) {
-    if (model.sizeMB > AUTO_DOWNLOAD_THRESHOLD_MB) {
-      setConsentModel(model); // show consent modal
-    } else {
-      startModelDownload(model); // small model — auto-start
-    }
+    setConsentModel(model); // always require explicit consent before any model download
   }
 
   function handleConsentConfirm() {
@@ -590,6 +593,7 @@ function SwotApp() {
         <SwotInterview
           session={session}
           swot={swot}
+          coachTone={coachTone}
           onAddItem={handleAddItem}
           onFinish={handleFinish}
           onBack={handleBackToIntro}
