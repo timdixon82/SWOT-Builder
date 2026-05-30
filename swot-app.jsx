@@ -271,8 +271,8 @@ function AIBadge({ aiState, onRequestModel }) {
     label = type === 'window-ai' ? "Downloading…" : `Loading${pct}`;
     dotColor = "#FF7C00";
   } else if (status === 'ready') {
-    label = type === 'window-ai' ? "AI on · Built-in"
-          : type === 'webllm'   ? "AI on · Browser"
+    label = type === 'window-ai' ? "AI on — Built-in"
+          : type === 'webllm'   ? "AI on — Browser"
           : "AI on";
     dotColor = "var(--pass)";
   } else {

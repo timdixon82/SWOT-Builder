@@ -187,6 +187,7 @@ const LocalAI = (function () {
       },
     });
 
+    _progressText = '';
     _status = 'ready';
     emit();
   }
