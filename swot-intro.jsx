@@ -20,7 +20,58 @@ const SUBJECT_EXAMPLES = [
   "Our Q3 marketing push",
 ];
 
-function SwotIntro({ onStart }) {
+// ── AI status line for intro card ────────────────────────────────────────────
+// Shows a plain-English sentence and coloured dot so users know AI readiness
+// before they start. The live region announces changes without a page reload.
+// eslint-disable-next-line no-unused-vars -- used as JSX tag inside SwotIntro
+function AiStatusLine({ aiState = {} }) {
+  const { status } = aiState;
+
+  let dotColor, text;
+
+  if (status === 'starting') {
+    dotColor = "var(--border)";
+    text = "Checking for AI support…";
+  } else if (status === 'ready') {
+    dotColor = "var(--pass)";
+    text = "AI-powered analysis is enabled.";
+  } else if (status === 'loading') {
+    dotColor = "#FF7C00";
+    text = "AI model loading…";
+  } else {
+    // unavailable or anything else
+    dotColor = "var(--border)";
+    text = "Running in manual mode — AI not loaded. You can load an AI model from the header.";
+  }
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "var(--space-2)",
+        padding: "var(--space-2) 0",
+        fontSize: "var(--text-sm)",
+        color: "var(--fg-muted)",
+        marginTop: "var(--space-3)",
+      }}
+    >
+      <span aria-hidden="true" style={{
+        width: 9,
+        height: 9,
+        borderRadius: "50%",
+        background: dotColor,
+        flexShrink: 0,
+        display: "inline-block",
+      }} />
+      <span>{text}</span>
+    </div>
+  );
+}
+
+function SwotIntro({ onStart, aiState = {} }) {
   const [subject, setSubject] = useState("");
   const [scope, setScope] = useState("business");
   const [title, setTitle] = useState("");
@@ -95,6 +146,9 @@ function SwotIntro({ onStart }) {
             aria-describedby="title-hint"
           />
         </div>
+
+        {/* AI status line — announces changes to screen readers */}
+        <AiStatusLine aiState={aiState} />
 
         <div style={{display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-2)"}}>
           <button

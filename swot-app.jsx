@@ -167,8 +167,9 @@ function DownloadConsentModal({ model, onConfirm, onCancel }) {
 
 // ── WebLLM progress bar ──────────────────────────────────────────────────────
 // Fixed bar along the bottom of the viewport while a model is downloading.
-function WebLLMProgressBar({ progress }) {
+function WebLLMProgressBar({ progress, progressText }) {
   const pct = Math.round(progress * 100);
+  const phaseLabel = progressText || (progress > 0 ? 'Downloading…' : 'Preparing…');
   return (
     <div style={{
       position: "fixed", bottom: 0, left: 0, right: 0,
@@ -176,39 +177,41 @@ function WebLLMProgressBar({ progress }) {
       borderTop: "1px solid var(--border)",
       padding: "var(--space-3) var(--space-6)",
       display: "flex",
-      alignItems: "center",
-      gap: "var(--space-4)",
+      flexDirection: "column",
+      gap: "var(--space-2)",
       zIndex: 80,
-    }} role="status" aria-live="polite" aria-label={`Downloading AI model, ${pct}% complete`}>
-      <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>
-        Downloading AI model…
-      </span>
-      <div style={{
-        flex: 1,
-        height: 6,
-        background: "var(--neutral-bg)",
-        borderRadius: 999,
-        overflow: "hidden",
-      }}>
+    }} role="status" aria-live="polite" aria-label={`AI model: ${phaseLabel}, ${pct}% complete`}>
+      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+        <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>
+          {phaseLabel}
+        </span>
         <div style={{
-          height: "100%",
-          width: pct + "%",
-          background: "var(--accent)",
+          flex: 1,
+          height: 6,
+          background: "var(--neutral-bg)",
           borderRadius: 999,
-          transition: "width 400ms ease",
-        }} />
+          overflow: "hidden",
+        }}>
+          <div style={{
+            height: "100%",
+            width: pct + "%",
+            background: "var(--accent)",
+            borderRadius: 999,
+            transition: "width 400ms ease",
+          }} />
+        </div>
+        <span style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "var(--text-xs)",
+          color: "var(--fg-muted)",
+          whiteSpace: "nowrap",
+          flexShrink: 0,
+          minWidth: 36,
+          textAlign: "right",
+        }}>
+          {pct}%
+        </span>
       </div>
-      <span style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: "var(--text-xs)",
-        color: "var(--fg-muted)",
-        whiteSpace: "nowrap",
-        flexShrink: 0,
-        minWidth: 36,
-        textAlign: "right",
-      }}>
-        {pct}%
-      </span>
     </div>
   );
 }
@@ -268,9 +271,9 @@ function AIBadge({ aiState, onRequestModel }) {
     label = type === 'window-ai' ? "Downloading…" : `Loading${pct}`;
     dotColor = "#FF7C00";
   } else if (status === 'ready') {
-    label = type === 'window-ai' ? "Built-in AI"
-          : type === 'webllm'   ? "Browser AI"
-          : "AI ready";
+    label = type === 'window-ai' ? "AI on · Built-in"
+          : type === 'webllm'   ? "AI on · Browser"
+          : "AI on";
     dotColor = "var(--pass)";
   } else {
     // unavailable
@@ -312,8 +315,8 @@ function AIBadge({ aiState, onRequestModel }) {
         aria-haspopup={canPick ? "menu" : undefined}
         aria-describedby={status === 'ready' ? "ai-badge-desc" : undefined}
       >
-        <span style={{
-          width: 7, height: 7, borderRadius: "50%",
+        <span aria-hidden="true" style={{
+          width: 9, height: 9, borderRadius: "50%",
           background: dotColor,
           flexShrink: 0,
           animation: status === 'loading' || status === 'starting'
@@ -555,7 +558,7 @@ function SwotApp() {
   function handleBackToInterview() { setStep("interview"); }
 
   const totalCount = window.BUCKETS.reduce((n, b) => n + (swot[b.key]?.length || 0), 0);
-  const isDownloading = aiState.type === 'webllm' && aiState.status === 'loading';
+  const isDownloading = aiState.status === 'loading';
   const aiUnavailable = aiState.status === 'unavailable';
 
   return (
@@ -581,7 +584,7 @@ function SwotApp() {
         />
       )}
 
-      {step === "intro" && <SwotIntro onStart={handleStart} />}
+      {step === "intro" && <SwotIntro onStart={handleStart} aiState={aiState} />}
 
       {step === "interview" && session && (
         <SwotInterview
@@ -616,7 +619,7 @@ function SwotApp() {
       >{toast || ""}</div>
 
       {/* Download progress bar — fixed to viewport bottom */}
-      {isDownloading && <WebLLMProgressBar progress={aiState.progress} />}
+      {isDownloading && <WebLLMProgressBar progress={aiState.progress} progressText={aiState.progressText} />}
 
       {/* Download consent modal for large models */}
       {consentModel && (

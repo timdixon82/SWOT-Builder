@@ -111,16 +111,17 @@ const OFFLINE_QUESTIONS = [
 // LocalAI — manages browser-local AI backends
 // ---------------------------------------------------------------------
 const LocalAI = (function () {
-  let _type     = null;        // 'window-ai' | 'webllm' | 'offline'
-  let _status   = 'starting';  // 'starting' | 'loading' | 'ready' | 'unavailable'
-  let _progress = 0;           // 0–1 during WebLLM download
-  let _session  = null;        // window.ai LanguageModel session
-  let _engine   = null;        // WebLLM MLCEngine instance
-  let _listeners = [];
-  let _offlineIdx = 0;
+  let _type         = null;        // 'window-ai' | 'webllm' | 'offline'
+  let _status       = 'starting';  // 'starting' | 'loading' | 'ready' | 'unavailable'
+  let _progress     = 0;           // 0–1 during WebLLM download
+  let _progressText = '';          // human-readable phase label from WebLLM callback
+  let _session      = null;        // window.ai LanguageModel session
+  let _engine       = null;        // WebLLM MLCEngine instance
+  let _listeners    = [];
+  let _offlineIdx   = 0;
 
   function emit() {
-    const state = { type: _type, status: _status, progress: _progress };
+    const state = { type: _type, status: _status, progress: _progress, progressText: _progressText };
     _listeners.forEach(fn => { try { fn(state); } catch(_e) {} });
   }
 
@@ -168,17 +169,20 @@ const LocalAI = (function () {
   }
 
   async function loadWebLLM(modelId) {
-    _type     = 'webllm';
-    _status   = 'loading';
-    _progress = 0;
+    _type         = 'webllm';
+    _status       = 'loading';
+    _progress     = 0;
+    _progressText = 'Preparing engine…';
     emit();
 
     await _ensureWebLLMScript();
+    _progressText = 'Starting download…';
     const { CreateMLCEngine } = window.mlc_llm;
 
     _engine = await CreateMLCEngine(modelId, {
       initProgressCallback: (p) => {
-        _progress = typeof p.progress === 'number' ? p.progress : 0;
+        _progress     = typeof p.progress === 'number' ? p.progress : 0;
+        _progressText = p.text || '';
         emit();
       },
     });
@@ -224,9 +228,9 @@ const LocalAI = (function () {
   // ── Public surface ───────────────────────────────────────────────────
   function onStatus(fn) {
     _listeners.push(fn);
-    try { fn({ type: _type, status: _status, progress: _progress }); } catch(_e) {}
+    try { fn({ type: _type, status: _status, progress: _progress, progressText: _progressText }); } catch(_e) {}
   }
-  function getStatus() { return { type: _type, status: _status, progress: _progress }; }
+  function getStatus() { return { type: _type, status: _status, progress: _progress, progressText: _progressText }; }
   function isReady()   { return _status === 'ready'; }
   function hasWebGPU() { return !!navigator.gpu; }
 
