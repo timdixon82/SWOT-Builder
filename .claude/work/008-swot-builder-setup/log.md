@@ -41,3 +41,6 @@ Q26 (how to record the browser-application stack) was sent through a terminal co
 ## [2026-05-22] decision | Q26 confirmed
 
 Tim confirmed Q26: a new stack page is added to the global wiki for this kind of project, named "Browser AI Application". All five SWOT-Builder questions, Q26 to Q30, are now answered, and the SWOT-Builder setup build is unblocked.
+- [2026-05-30 23:09:32] subagent completed
+- [2026-05-30 23:46:53] subagent completed
+- [2026-05-30 23:52:10] subagent completed
