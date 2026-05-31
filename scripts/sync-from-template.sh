@@ -196,6 +196,7 @@ SYNC_MANIFEST=(
 SCRIPTS_MANIFEST=(
   "scripts/next-q.sh"
   "scripts/sync-from-template.sh"
+  "scripts/record-backport.sh"
 )
 
 changed=0
