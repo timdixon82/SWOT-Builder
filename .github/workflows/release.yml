@@ -1,8 +1,7 @@
 # Release automation with release-please.
-# Hosted on GitHub Pages (Q28A). Deployment is automatic from main branch.
-# No untrusted context variables are used in any run step.
-# Action versions pinned on 2026-05-24.
-# The GITHUB_TOKEN is a built-in GitHub Actions secret, not a third-party secret.
+#
+# Action versions were verified against GitHub and pinned to commit SHAs
+# on 2026-05-21. The version tag is in the trailing comment.
 
 name: Release
 on:
@@ -20,4 +19,15 @@ jobs:
       - name: Release Please
         uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7  # v5.0.0
         with:
+          # GITHUB_TOKEN is a built-in secret provided automatically by
+          # GitHub Actions on every run. No manual token configuration or
+          # repository secret is required.
           token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      # Deploy step: this is a stub. Fill it in with the project's hosting
+      # target. GitHub Pages for a static project; the Amazon Web Services
+      # Lightsail virtual private server running Virtualmin for a PHP and
+      # MariaDB project. Deploy only when release-please has created a
+      # release.

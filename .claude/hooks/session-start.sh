@@ -128,7 +128,7 @@ if [ -f "$tv_file" ]; then
     if [ -f "$_pending_prefix_file" ]; then
       _pending_prefix="$(tr -d '[:space:]' < "$_pending_prefix_file" 2>/dev/null || true)"
       # Validate: must be 2-4 uppercase letters only (path-traversal guard).
-      if [ -n "$_pending_prefix" ] && printf '%s' "$_pending_prefix" | grep -qE '^[A-Z]{2,4}$'; then
+      if [ -n "$_pending_prefix" ] && printf '%s' "$_pending_prefix" | grep -qE '^[A-Z][A-Z0-9]{1,5}$'; then
         _pending_file="$master/outputs/project-pending/${_pending_prefix}.md"
         if [ -f "$_pending_file" ]; then
           # Count open entries. grep -c exits 1 with no matches — handle that.
