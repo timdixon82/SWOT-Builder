@@ -11,7 +11,7 @@
     "lint": "npm run lint:html && npm run lint:css && npm run lint:js"
   },
   "devDependencies": {
-    "eslint": "9.27.0",
+    "eslint": "10.4.1",
     "globals": "16.1.0",
     "htmlhint": "1.9.2",
     "stylelint": "^17.0.0",
