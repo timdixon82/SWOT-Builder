@@ -7,14 +7,22 @@
 #   track and propose version bumps automatically. They are installed via
 #   npm ci against that manifest, never with npm install -g.
 #
-#   Chrome and ChromeDriver matching (cross-project pattern from
-#   Sophie's Escape: Witch's Castle, currently green). browser-driver-manager
-#   installs a matched Chrome and ChromeDriver pair into the runner's home
-#   directory, sidestepping the GitHub-Actions Chrome-version-drift problem
-#   without depending on the Chrome for Testing CDN. The exact binary paths
-#   are exported into GITHUB_ENV so the Pa11y and axe steps can address them
-#   directly. PUPPETEER_EXECUTABLE_PATH is scoped to the Pa11y step only,
-#   so Puppeteer-using tools downstream are not affected.
+#   Chrome and ChromeDriver matching (action-based). browser-actions/setup-chrome
+#   installs a matched Chrome and ChromeDriver pair and exposes their paths as
+#   step outputs (steps.chrome.outputs.chrome-path and
+#   steps.chrome.outputs.chromedriver-path). This avoids the fragile find-based
+#   path detection of browser-driver-manager and the hardcoded CDN-URL coupling
+#   of the Chrome for Testing CDN approach. PUPPETEER_EXECUTABLE_PATH is scoped
+#   to the Pa11y step only, so Puppeteer-using tools downstream are not affected.
+#
+#   Binary path for axe-core. --chromedriver-path tells axe which ChromeDriver
+#   binary to use, but ChromeDriver also needs to know which Chrome binary to
+#   launch. On Linux, ChromeDriver uses a hardcoded lookup list (not PATH) and
+#   finds the system Chrome, which may be a different version. The --chrome-path
+#   flag in axe-cli calls setChromeBinaryPath() in selenium-webdriver, directing
+#   ChromeDriver to the action-installed Chrome binary explicitly and bypassing
+#   the hardcoded lookup entirely. Both --chromedriver-path and --chrome-path
+#   use the env: pattern so no ${{ }} expression appears in a run: command.
 #
 # Known limitation: the app may require JavaScript execution to render.
 # Pa11y and axe-core run against the served HTML; full rendered-interface
@@ -51,18 +59,11 @@ jobs:
       - name: Add accessibility tools to PATH
         run: echo "$GITHUB_WORKSPACE/.github/accessibility-tools/node_modules/.bin" >> "$GITHUB_PATH"
 
-      - name: Install browser-driver-manager
-        run: npm install -g browser-driver-manager
-
-      - name: Install matching Chrome and ChromeDriver versions
-        run: npx browser-driver-manager install chrome
-
-      - name: Set Chrome and ChromeDriver paths for accessibility tools
-        run: |
-          CHROME=$(find /home/runner/.browser-driver-manager/chrome -name "chrome" -type f 2>/dev/null | head -1)
-          DRIVER=$(find /home/runner/.browser-driver-manager/chromedriver -name "chromedriver" -type f 2>/dev/null | head -1)
-          echo "A11Y_CHROME=${CHROME:-/usr/bin/google-chrome-stable}" >> "$GITHUB_ENV"
-          echo "A11Y_CHROMEDRIVER=${DRIVER}" >> "$GITHUB_ENV"
+      - name: Set up Chrome and ChromeDriver
+        id: chrome
+        uses: browser-actions/setup-chrome@2e1d749697dd1612b833dba4a722266286fbefcd  # v2.1.2
+        with:
+          install-chromedriver: true
 
       - name: Serve the site in the background
         # Adapt this step to the project's stack.
@@ -76,14 +77,15 @@ jobs:
       - name: Pa11y at WCAG 2.2 AAA
         # Adapt the URL to match the project's entry point.
         env:
-          PUPPETEER_EXECUTABLE_PATH: ${{ env.A11Y_CHROME }}
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: pa11y --standard WCAG2AAA http://localhost:8080/index.html
 
       - name: axe-core at WCAG 2.2 AAA
         # Adapt the URL to match the project's entry point.
-        run: |
-          if [ -n "${A11Y_CHROMEDRIVER:-}" ]; then
-            axe http://localhost:8080/index.html --tags wcag2a,wcag2aa,wcag2aaa,wcag22aa,wcag22aaa --chrome-options="no-sandbox" --chromedriver-path "$A11Y_CHROMEDRIVER"
-          else
-            axe http://localhost:8080/index.html --tags wcag2a,wcag2aa,wcag2aaa,wcag22aa,wcag22aaa --chrome-options="no-sandbox"
-          fi
+        # --chrome-path overrides ChromeDriver's hardcoded binary lookup with the
+        # action-installed Chrome, ensuring version parity with --chromedriver-path.
+        # env: pattern used so no ${{ }} expression appears in a run: command.
+        env:
+          CHROMEDRIVER_PATH: ${{ steps.chrome.outputs.chromedriver-path }}
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: axe http://localhost:8080/index.html --tags wcag2a,wcag2aa,wcag2aaa,wcag22aa,wcag22aaa --chrome-options="no-sandbox" --chromedriver-path "$CHROMEDRIVER_PATH" --chrome-path "$CHROME_PATH"
