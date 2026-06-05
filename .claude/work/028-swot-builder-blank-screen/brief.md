@@ -1,5 +1,7 @@
 # Brief: 028-swot-builder-blank-screen
 
+Status: archived
+
 ## Summary
 
 Fix the bug Tim reported: when the SWOT Builder loads, the initial screen shows nothing (blank). Find the root cause, fix it, and verify the app renders its first screen correctly. SWOT Builder is a browser-side static app (HTML, CSS, JavaScript with React) in `timdixon82/SWOT-Builder`.

@@ -1,5 +1,7 @@
 # Brief: 008-swot-builder-setup
 
+Status: archived
+
 ## Summary
 
 Adopt the new `timdixon82/SWOT-Builder` repository as a team project and bring it under governance. SWOT-Builder is a browser application that runs a guided SWOT analysis interview using browser-local artificial intelligence, with no server and no application programming interface key. The repository was created on 2026-05-22 from files Tim supplied; the original implementation is on `main`. This work backfills the missing reviews, scaffolds the project wiki, and runs the setup build.

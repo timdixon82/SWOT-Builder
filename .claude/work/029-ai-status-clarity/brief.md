@@ -1,6 +1,6 @@
 # Work folder 029 — AI status clarity and download progress
 
-- Status: done
+- Status: archived
 - Triage type: 7 — small feature
 - Branch: feat/029-ai-status-clarity
 - Mockup mode: D (no mockup — UI polish only)

@@ -1,6 +1,6 @@
 # Work folder 031 — Q27B and Q30A closeout
 
-- Status: done
+- Status: archived
 - Triage type: 6 — bug fix
 - Branch: fix/031-q27b-q30a-closeout
 - Mockup mode: D

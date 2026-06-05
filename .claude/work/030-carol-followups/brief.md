@@ -1,6 +1,6 @@
 # Work folder 030 — Carol follow-ups from PR #18
 
-- Status: done
+- Status: archived
 - Triage type: 6 — bug fix (minor)
 - Branch: fix/030-carol-followups
 - Mockup mode: D (no mockup — code only)

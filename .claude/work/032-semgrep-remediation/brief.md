@@ -1,6 +1,6 @@
 # Work folder 032 — Semgrep remediation for PR #24
 
-Status: done
+Status: archived
 Created: 2026-05-31
 Branch: chore/add-next-q-script
 

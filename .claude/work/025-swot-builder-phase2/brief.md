@@ -1,5 +1,7 @@
 # Brief: 025-swot-builder-phase2
 
+Status: archived
+
 ## Summary
 
 Phase 2 remediation for SWOT Builder. Fix the 25 accessibility findings catalogued in Carol's baseline audit (docs/accessibility.md in timdixon82/SWOT-Builder). Work the critical findings first (7), then high (8), then medium (6), then low (4). Also align the accessibility workflow to the team standard pattern (unpin Pa11y, remove jq step, rely on browser-driver-manager).
