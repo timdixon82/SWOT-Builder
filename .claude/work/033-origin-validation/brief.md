@@ -1,6 +1,6 @@
 # Work folder 033 — postMessage origin validation
 
-Status: active
+Status: archived
 Created: 2026-05-31
 Branch: fix/postmessage-origin-validation
 
