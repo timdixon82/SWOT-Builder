@@ -1,4 +1,4 @@
-/* swot-engine.jsx — Browser-local AI backends, storage, SWOT helpers.
+/* swot-engine.jsx — Browser-local AI backends.
  *
  * AI priority (no installs, no server, no API key):
  *   1. Chrome Prompt API (window.ai.languageModel) — Chrome 127+, zero download
@@ -7,35 +7,14 @@
  *
  * Download policy: every model download requires explicit user consent (Q27B).
  *
- * Exposes on window: LocalAI, WEBLLM_MODELS, STORAGE_KEY, loadState, saveState,
- *   clearState, uid, BUCKETS, BUCKET_BY_KEY, newEmptySwot,
- *   extractJson, aiProcessAnswer, aiOpeningQuestion, toMarkdown
+ * The SWOT data model, persistence, JSON extraction, and markdown export
+ * live in swot-engine-core.js (loaded before this file — see index.html),
+ * so that pure, DOM-free logic can be unit tested without a browser. This
+ * file uses those helpers as globals (window.extractJson, and so on,
+ * which are also readable as bare identifiers once attached to window).
+ *
+ * Exposes on window: LocalAI, WEBLLM_MODELS, aiProcessAnswer, aiOpeningQuestion
  */
-
-// ---------------------------------------------------------------------
-// Storage
-// ---------------------------------------------------------------------
-const STORAGE_KEY = "swot-builder-v1";
-function loadState() {
-  try { const r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; } catch(_e) { return null; }
-}
-function saveState(s) { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(_e) {} }
-function clearState() { try { localStorage.removeItem(STORAGE_KEY); } catch(_e) {} }
-
-// ---------------------------------------------------------------------
-// Defaults & utilities
-// ---------------------------------------------------------------------
-function uid() { return Math.random().toString(36).slice(2, 9); }
-
-const BUCKETS = [
-  { key: "S", name: "Strengths",     short: "Strength",    meta: "Internal · helpful" },
-  { key: "W", name: "Weaknesses",    short: "Weakness",    meta: "Internal · harmful" },
-  { key: "O", name: "Opportunities", short: "Opportunity", meta: "External · helpful" },
-  { key: "T", name: "Threats",       short: "Threat",      meta: "External · harmful" },
-];
-const BUCKET_BY_KEY = Object.fromEntries(BUCKETS.map(b => [b.key, b]));
-
-function newEmptySwot() { return { S: [], W: [], O: [], T: [] }; }
 
 // ---------------------------------------------------------------------
 // WebLLM model catalogue — sizeMB is the approximate download size shown in
@@ -66,26 +45,6 @@ const WEBLLM_MODELS = [
   },
 ];
 window.WEBLLM_MODELS = WEBLLM_MODELS;
-
-// ---------------------------------------------------------------------
-// Robust JSON extractor
-// ---------------------------------------------------------------------
-function extractJson(raw) {
-  if (!raw) return null;
-  let text = raw.trim()
-    .replace(/^```(?:json)?/i, "").replace(/```\s*$/i, "").trim();
-  const firstBrace = text.search(/[\{\[]/);
-  if (firstBrace > 0) text = text.slice(firstBrace);
-  try { return JSON.parse(text); } catch(_e) {}
-  let depth = 0, end = -1;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (c === "{" || c === "[") depth++;
-    else if (c === "}" || c === "]") { depth--; if (depth === 0) { end = i + 1; break; } }
-  }
-  if (end > 0) { try { return JSON.parse(text.slice(0, end)); } catch(_e) {} }
-  return null;
-}
 
 // ---------------------------------------------------------------------
 // Pre-canned questions — used when no AI is available.
@@ -309,7 +268,7 @@ async function aiProcessAnswer({ subject, scope, history, questionAsked, answerG
     };
   }
 
-  const parsed = extractJson(raw);
+  const parsed = window.extractJson(raw);
   if (!parsed) {
     return {
       item: {
@@ -361,33 +320,8 @@ async function aiOpeningQuestion({ subject, scope, coachTone = 'friendly' }) {
 }
 
 // ---------------------------------------------------------------------
-// Markdown export
-// ---------------------------------------------------------------------
-function toMarkdown(state) {
-  const { subject, title, swot } = state;
-  const lines = [`# ${title || "SWOT Analysis"}`];
-  if (subject) lines.push(`**Subject:** ${subject}`);
-  lines.push("");
-  for (const b of BUCKETS) {
-    lines.push(`## ${b.name}`);
-    const items = swot[b.key] || [];
-    if (!items.length) lines.push("_(none captured)_");
-    else items.forEach(it => {
-      lines.push(`- **${it.title}**${it.description ? " — " + it.description : ""}` +
-        (it.tags?.length ? `  \n  _tags: ${it.tags.join(", ")}_` : "") +
-        (it.confidence   ? `  \n  _confidence: ${it.confidence}_` : ""));
-    });
-    lines.push("");
-  }
-  return lines.join("\n");
-}
-
-// ---------------------------------------------------------------------
 // Expose to window
 // ---------------------------------------------------------------------
 Object.assign(window, {
-  STORAGE_KEY, loadState, saveState, clearState,
-  uid, BUCKETS, BUCKET_BY_KEY, newEmptySwot,
-  extractJson, aiProcessAnswer, aiOpeningQuestion,
-  toMarkdown,
+  aiProcessAnswer, aiOpeningQuestion,
 });
