@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.1](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.0...v1.1.1) (2026-07-16)
+
+
+### Bug Fixes
+
+* add dependabot cooldown block to satisfy semgrep dependabot-missing-cooldown rule ([#40](https://github.com/timdixon82/SWOT-Builder/issues/40)) ([fe50a23](https://github.com/timdixon82/SWOT-Builder/commit/fe50a23953f75115de00b769fc894076db773b74))
+* **security:** validate e.origin in tweaks-panel onmessage listener ([16a040d](https://github.com/timdixon82/SWOT-Builder/commit/16a040d61b1cb671002ca39a7becf48f7ada1b4b))
+* **security:** validate e.origin in tweaks-panel onmessage listener ([003080a](https://github.com/timdixon82/SWOT-Builder/commit/003080a4637bbc2538c00d47708c7732e2c40bdf))
+
 ## [1.1.0](https://github.com/timdixon82/SWOT-Builder/compare/v1.0.0...v1.1.0) (2026-05-31)
 
 
