@@ -59,6 +59,14 @@
   <h1 class="print-only">SWOT Builder</h1>
   <div id="root" tabindex="-1"></div>
 
+  <!-- SWOT data model, persistence, and markdown export — pure, DOM-light
+       logic, unit tested independently (see swot-engine-core.test.js).
+       Loaded as a native ES module so it finishes executing before
+       DOMContentLoaded, which is when Babel Standalone transforms and runs
+       the "text/babel" scripts below, so window.extractJson and friends
+       are already in place by the time they are read. -->
+  <script type="module" src="swot-engine-core.js"></script>
+
   <!-- App scripts. Order matters: engine + tweaks shell load before screens, app last. -->
   <script type="text/babel" src="tweaks-panel.jsx"></script>
   <script type="text/babel" src="swot-engine.jsx"></script>

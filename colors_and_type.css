@@ -53,7 +53,7 @@
   --bg-card:       #ffffff;        /* Card / surface background       */
   --fg:            #1a1a1a;        /* Body text       17.8:1 AAA      */
   --fg-muted:      #495260;        /* Secondary text   7.3:1 AAA on page bg, 7.9:1 on card */
-  --border:        #d1d5db;        /* Dividers, input borders         */
+  --border:        #7b8794;        /* Dividers, input borders         */
 
   --accent:        #061528;        /* Navy — primary interactive      */
   --accent-hover:  #0a2445;        /* Slightly darker navy on hover   */

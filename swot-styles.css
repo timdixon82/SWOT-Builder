@@ -224,6 +224,12 @@ body { font-family: var(--font-sans); }
 }
 .textarea { resize: vertical; min-height: 120px; }
 
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--fg-muted);
+  opacity: 1; /* Firefox applies its own opacity to placeholder text by default */
+}
+
 /* ---------------------------------------------------------- */
 /* Intro screen                                                */
 /* ---------------------------------------------------------- */
@@ -922,6 +928,18 @@ body { font-family: var(--font-sans); }
 .swot-grid.style-bold .quadrant.w .item-card { color: var(--w-fg); }
 .swot-grid.style-bold .quadrant.o .item-card { color: var(--o-fg); }
 .swot-grid.style-bold .quadrant.t .item-card { color: var(--t-fg); }
+.swot-grid.style-bold .quadrant.s .item-card .item-tag,
+.swot-grid.style-bold .quadrant.s .item-card .source-q,
+.swot-grid.style-bold .quadrant.s .item-card .conf-dots-label { color: var(--s-fg); }
+.swot-grid.style-bold .quadrant.w .item-card .item-tag,
+.swot-grid.style-bold .quadrant.w .item-card .source-q,
+.swot-grid.style-bold .quadrant.w .item-card .conf-dots-label { color: var(--w-fg); }
+.swot-grid.style-bold .quadrant.o .item-card .item-tag,
+.swot-grid.style-bold .quadrant.o .item-card .source-q,
+.swot-grid.style-bold .quadrant.o .item-card .conf-dots-label { color: var(--o-fg); }
+.swot-grid.style-bold .quadrant.t .item-card .item-tag,
+.swot-grid.style-bold .quadrant.t .item-card .source-q,
+.swot-grid.style-bold .quadrant.t .item-card .conf-dots-label { color: var(--t-fg); }
 .swot-grid.style-bold .item-card .item-title {
   font-size: var(--text-lg);
   font-weight: 900;
