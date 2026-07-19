@@ -6,7 +6,7 @@ const { useState: useS_A, useEffect: useE_A, useRef: useR_A } = React;
 // ── Logo ─────────────────────────────────────────────────────────────────────
 function Logo() {
   return (
-    <div className="logo" aria-label="SWOT Builder">
+    <div className="logo" role="img" aria-label="SWOT Builder">
       <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect x="6"  y="6"  width="24" height="24" rx="3" fill="#FFFFFF"/>
         <rect x="34" y="6"  width="24" height="24" rx="3" fill="#FF7C00"/>

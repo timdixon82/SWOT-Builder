@@ -10,12 +10,14 @@ export default [
   {
     ignores: [
       'eslint.config.js',
+      'vitest.config.js',
       'node_modules/**',
       'assets/analytics/count.js',
     ],
   },
   {
     files: ['*.jsx', '*.js'],
+    ignores: ['swot-engine-core.js'],
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'script',
@@ -38,6 +40,37 @@ export default [
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
+    },
+  },
+  {
+    // swot-engine-core.js is loaded as a native ES module (see index.html),
+    // not a Babel-compiled classic script, so it uses import/export syntax.
+    files: ['swot-engine-core.js'],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      globals: globals.browser,
+    },
+    rules: {
+      'no-unused-vars': ['warn', { caughtErrorsIgnorePattern: '^_' }],
+      'no-undef': 'warn',
+      'eqeqeq': ['error', 'always', { 'null': 'ignore' }],
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-new-func': 'error',
+    },
+  },
+  {
+    files: ['tests/**/*.js'],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: 'module',
+      globals: globals.node,
+    },
+    rules: {
+      'no-unused-vars': ['error'],
+      'no-undef': 'error',
+      'eqeqeq': 'error',
     },
   },
 ];
