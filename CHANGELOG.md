@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.1...v1.1.2) (2026-07-23)
+
+
+### Bug Fixes
+
+* bump fast-uri to patch high-severity advisory ([#50](https://github.com/timdixon82/SWOT-Builder/issues/50)) ([34d033e](https://github.com/timdixon82/SWOT-Builder/commit/34d033eac732f6a32a44ce106c698e8f89c73620))
+
 ## [1.1.1](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.0...v1.1.1) (2026-07-16)
 
 
