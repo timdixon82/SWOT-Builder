@@ -31,3 +31,7 @@ Traced `.github/workflows/deploy.yml` history:
 Conclusion: this is a deploy-configuration regression introduced by an unreviewed template sync, not an architecture or folder-structure problem. Revised the brief: dropped the Jacob escalation and the folder-reorganisation plan, retargeted at restoring the ALLOW-list. Reported to Tim with the option to proceed straight to Sean.
 
 Cross-cutting note for later: a template sync silently overwriting a project's legitimate deploy.yml customisation is a process gap that could hit any project with a customised ALLOW-list. Flagged to Tim as a candidate for a global fix (sync script should diff and warn on customised sections, or the customisation should move to a place the sync never touches), to be raised in a team-root session, not fixed inside this project.
+
+## [2026-07-29] Dispatch | Sean, attempt 1, failed on monthly spend limit
+
+Dispatched Sean to restore the deploy.yml ALLOW-list per the root cause above. The dispatch terminated early: "Agent terminated early due to an API error: You've hit your monthly spend limit." No branch or commit was created; nothing to roll back. Reported to Tim. Retrying on his instruction to resume.
