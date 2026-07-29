@@ -168,20 +168,40 @@ jobs:
         # unanchored 'data/***' also matches node_modules/css-tree/data/*,
         # silently publishing node_modules internals to the public site.
         id: artifact
+        # SWOT Builder does not use the canonical styles/scripts/data/assets
+        # layout: it is an unbundled Babel Standalone app whose runtime
+        # files sit at the repository root (index.html, the CSS files,
+        # theme.js, the *.jsx screens, swot-engine-core.js, and
+        # models.json), plus fonts/ and assets/ directories. The include
+        # list below is customised to that real layout rather than the
+        # template default. A future template sync MUST re-apply this
+        # customisation rather than silently overwrite it with the
+        # generic template list -- see commit 4c8eede ("sync template to
+        # v1.9.2"), which dropped every root-level include here and broke
+        # the live site until this fix restored them.
         if: steps.archetype.outputs.is_browser_extension != 'true' && steps.archetype.outputs.is_wordpress_theme != 'true'
         run: |
           if [ -d dist ]; then
             echo "path=dist" >> "$GITHUB_OUTPUT"
           else
             mkdir _site
-            # The allow-listed paths below (styles/, scripts/, data/,
-            # assets/, index.html) are published to the public site: never
-            # put a secret or other non-public file in any of them.
+            # The allow-listed paths below are published to the public
+            # site: never put a secret or other non-public file in any of
+            # them.
             rsync -a --prune-empty-dirs --safe-links \
                      --include='/index.html' \
-                     --include='/styles/***' \
-                     --include='/scripts/***' \
-                     --include='/data/***' \
+                     --include='/colors_and_type.css' \
+                     --include='/swot-styles.css' \
+                     --include='/theme.js' \
+                     --include='/swot-app.jsx' \
+                     --include='/swot-board.jsx' \
+                     --include='/swot-engine.jsx' \
+                     --include='/swot-engine-core.js' \
+                     --include='/swot-interview.jsx' \
+                     --include='/swot-intro.jsx' \
+                     --include='/tweaks-panel.jsx' \
+                     --include='/models.json' \
+                     --include='/fonts/***' \
                      --include='/assets/***' \
                      --include='*/' \
                      --exclude='*' \
