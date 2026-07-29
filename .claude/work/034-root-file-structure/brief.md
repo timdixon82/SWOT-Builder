@@ -2,47 +2,47 @@
 
 ## Summary
 
-Tim reports that the live site (https://projects.timdixon.net/SWOT-Builder/) serves all resource files (JSX, CSS, JS, theme script) flat from the site root rather than organised into folders, and wants this fixed. Investigation confirms the live site matches the repository exactly: `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, and all five `.jsx` files sit at repository root, deployed as-is (ADR 0006: deploy by copying files, no build step).
+Tim reported that the live site (https://projects.timdixon.net/SWOT-Builder/) looked wrong and guessed it was because resource files sit flat at the site root. Investigation found the flat root layout is correct and intentional (ADR 0001, 0002, 0003, 0006) — but the live site is genuinely broken: `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, `models.json`, and all five `.jsx` files 404 on the live host, so React never mounts (blank/non-functional page).
 
-This flat layout is the recorded architecture, not an accident: ADR 0001 (static browser app, no server), ADR 0002 (Babel Standalone in-browser compile), ADR 0003 (global `window` wiring, no ES modules for the app scripts), and ADR 0006 (static hosting, no build/deploy pipeline) together produced a deliberately flat, relative-path file layout so the app can be deployed by a plain file copy and so Babel Standalone can fetch `.jsx` sources via same-origin XHR (see the CSP `connect-src 'self'` comment in `index.html`).
+Root cause found: `.github/workflows/deploy.yml` uses a fail-safe rsync ALLOW-list to build the GitHub Pages artifact. PR #41 (16 Jul 2026) correctly customised that list to SWOT Builder's real root-level file layout. Commit `4c8eede` ("chore: sync template to v1.9.2", 23 Jul 2026) overwrote deploy.yml with the generic template ALLOW-list (`styles/`, `scripts/`, `data/`, `assets/`), silently dropping every one of SWOT Builder's root-level includes. Since then, only `index.html` and `assets/**` (e.g. `assets/analytics/count.js`) have actually deployed; every other runtime file 404s on the live site.
+
+This is a deploy-configuration regression, not an architecture problem. No ADR needs to change; the fix restores the project-specific customisation that a template sync clobbered.
 
 Preamble fields (optional; used by the status dashboard):
 
-- Status: `blocked`
-- Branch: none
+- Status: `active`
+- Branch: `fix/deploy-allowlist-034` (Sean to create)
 - Mockup mode: (n/a — not a UI change)
-- Priority: (not yet assigned)
-- Blockers: Awaiting Tim's decision (Q-SWOT1) on whether to proceed given the ADR conflict, before any specialist is dispatched to build.
+- Priority: 1 (live site is broken)
+- Blockers: None
 
 ## Requirements
 
-None written yet. If Tim confirms he wants the reorganisation, Jacob assesses feasibility and produces the folder plan (this doubles as the architecture record); Sean then builds against Jacob's plan.
+None needed from Tad — this is a configuration restoration with a known-correct prior state (the PR #41 include list), verified against the current root file listing.
 
 ## Routing plan
 
-Jacob (architecture assessment and folder plan, only once Tim confirms) -> Sean (move files, update all references) -> Carol (functional + accessibility regression pass, since a bad path silently blanks the app per ADR 0001's known failure mode) -> Sonja (review, merge gate, Tim's approval).
+Sean (restore/extend the rsync ALLOW-list in `deploy.yml` to cover every current root-level runtime file) -> Carol (confirm the deployed artifact — or a local rsync dry run — includes every referenced file, and do a functional + accessibility pass once deployed) -> Sonja (review, merge gate, Tim's approval).
 
 ## Out of scope
 
-- Changing the no-build, no-server, static-hosting architecture itself (ADR 0001, ADR 0002, ADR 0006 stay in force).
-- Converting the app scripts to ES modules (ADR 0003 stays in force unless separately revisited).
+- Any change to the flat, root-level file layout itself (ADR 0001, 0002, 0003, 0006 stand; the earlier idea of moving files into folders is dropped now the real cause is known).
 - Any visual or functional change to the SWOT Builder app itself.
 - Changing the CDN-hosted dependencies (React, Babel, html2canvas) or their Subresource Integrity hashes.
+- Fixing the template sync process itself so it cannot clobber a project's customised deploy.yml again — that is a separate, global process question for a team-root session, noted to Tim separately.
 
 ## Risk and rollback
 
-Risk: Moving files into folders changes every relative path referenced in `index.html`, the Content Security Policy meta tag, and the JSX files' own cross-references; a missed path silently blanks the app (React never mounts) with no visible error for a screen-reader user.
+Risk: An incomplete ALLOW-list still omits a file the app needs, leaving some part of the live site broken after the fix.
 
-Rollback: The change lands on a branch behind a pull request; if Carol's regression pass or Tim's review finds a broken path, do not merge, and the live site (deployed from `main`) is unaffected until merge.
+Rollback: The change lands on a branch behind a pull request; Carol verifies the artifact contents before merge, and the current live site (already broken) is not made worse by leaving the branch unmerged if a problem is found.
 
 ## Definition of done
 
-- [ ] Jacob's folder plan is recorded in the project wiki (`docs/decisions/`) and does not contradict ADR 0001, 0002, 0003, or 0006 without Tim's explicit sign-off on a superseding decision.
-- [ ] All resource files referenced in `index.html` resolve correctly from the new paths, on both a root deploy and a sub-path deploy (matching `https://projects.timdixon.net/SWOT-Builder/`).
-- [ ] The Content Security Policy meta tag in `index.html` still matches the actual resource origins after the move.
-- [ ] Carol confirms the app loads and functions (interview flow, board, export/download, theme) with no console errors, and accessibility checks still pass.
-- [ ] The README file tree (`README.md`, lines around 95) is updated to match the new structure.
-- [ ] `docs/decisions/adr-0006-static-hosting-no-build-deploy.md` (and any other affected ADR) is annotated or superseded to reflect the new layout.
+- [ ] `deploy.yml`'s rsync ALLOW-list includes every root-level runtime file: `index.html`, `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, `swot-app.jsx`, `swot-board.jsx`, `swot-engine.jsx`, `swot-interview.jsx`, `swot-intro.jsx`, `tweaks-panel.jsx`, `models.json`, plus `fonts/***` and `assets/***`.
+- [ ] A local dry run (or the workflow's own run log) confirms every one of those files lands in the `_site` artifact.
+- [ ] Carol confirms the app loads and functions (interview flow, board, export/download, theme) on the live URL with no console errors, and accessibility checks still pass.
+- [ ] The customisation comment in `deploy.yml` is preserved so a future template sync is less likely to silently drop it again (or a stronger safeguard is proposed to Tim).
 
 ## Approved GitHub actions
 

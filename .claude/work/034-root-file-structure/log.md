@@ -16,3 +16,18 @@ The CSP `connect-src 'self'` in index.html exists specifically so Babel Standalo
 Decision: this is architecture-sensitive (touches four recorded ADRs), so per the conformance check this escalates to Jacob rather than going straight to Sean. Before spending Jacob's time, Sonja is taking the ADR conflict back to Tim as Q-SWOT1, since reorganising the layout would need at least one ADR amended or superseded, which counts as a standards change.
 
 Status set to blocked pending Tim's answer. No specialist dispatched yet.
+
+## [2026-07-29] Investigation | Root cause found — deploy allow-list regression, not a structure problem
+
+Tim asked why the page doesn't load if the files really are at root as expected. Sonja curled every resource path referenced in `index.html` against the live site: `index.html` and `assets/analytics/count.js` return 200, but `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, and all five `.jsx` files return 404 (GitHub Pages' generic 404 page).
+
+Traced `.github/workflows/deploy.yml` history:
+
+- PR #41 (`ff5a2a7`, 16 Jul 2026) correctly customised the rsync ALLOW-list in the deploy workflow to SWOT Builder's real root-level layout (explicit `--include` for each root file, plus `fonts/***` and `assets/***`), replacing the generic template `styles/`, `scripts/`, `data/`, `assets/` list.
+- `37a7028` ("sync template to v1.9.1", 19 Jul) correctly re-applied that customisation on top of the synced template.
+- `4c8eede` ("sync template to v1.9.2", 23 Jul) overwrote the ALLOW-list with the generic template version again, this time without re-applying the customisation. Every root-level `--include` line was lost. Confirmed via `git show 4c8eede -- .github/workflows/deploy.yml`.
+- `37a7028`'s predecessor pattern (manually re-apply after sync) was not repeated for v1.9.2 or the later v1.9.3–v1.9.6 syncs, so the live site has been serving only `index.html` and `assets/**` since 23 Jul.
+
+Conclusion: this is a deploy-configuration regression introduced by an unreviewed template sync, not an architecture or folder-structure problem. Revised the brief: dropped the Jacob escalation and the folder-reorganisation plan, retargeted at restoring the ALLOW-list. Reported to Tim with the option to proceed straight to Sean.
+
+Cross-cutting note for later: a template sync silently overwriting a project's legitimate deploy.yml customisation is a process gap that could hit any project with a customised ALLOW-list. Flagged to Tim as a candidate for a global fix (sync script should diff and warn on customised sections, or the customisation should move to a place the sync never touches), to be raised in a team-root session, not fixed inside this project.
