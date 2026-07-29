@@ -10,11 +10,11 @@ This is a deploy-configuration regression, not an architecture problem. No ADR n
 
 Preamble fields (optional; used by the status dashboard):
 
-- Status: `active`
-- Branch: `fix/deploy-allowlist-034`
+- Status: `done`
+- Branch: main (merged)
 - Mockup mode: (n/a — not a UI change)
 - Priority: 1 (live site is broken)
-- Blockers: Awaiting Tim's merge approval for PR #54
+- Blockers: None
 
 ## Requirements
 

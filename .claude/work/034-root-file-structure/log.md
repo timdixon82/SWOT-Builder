@@ -53,6 +53,12 @@ Second attempt also terminated early, this time on an API 529 "Overloaded" error
 Third attempt completed. Carol independently verified the workflow file (every referenced root file has an anchored `--include`, fail-safe `--exclude='*'` last, customisation comment preserved and now names commit `4c8eede` as the regression), reproduced the rsync dry run herself (12 files plus `fonts/` and `assets/analytics/count.js`, nothing unwanted), served the artifact locally and confirmed the app mounts, the interview flow completes, the board renders, export buttons are present, theme toggle works, and no missing-script console errors (one pre-existing CSP-blocked sourcemap fetch, harmless). Ran Pa11y WCAG2AAA against the rendered artifact and found two pre-existing findings unrelated to this diff: contrast on the intro screen's `.mini-cell` quadrant swatches, and five tweak-panel form fields missing id/name. Logged both as follow-up TASK items (owner Sean, plus a low-priority CI-coverage task for Jed), not blockers — this PR changes only `deploy.yml`. Agreed with Sean's call to skip the full accessibility regression suite for a workflow-only diff.
 
 Verdict: pass on all five review items, signed off for the merge gate. Definition-of-done items in brief.md ticked. Status remains active, blocked only on Tim's merge approval for PR #54.
+
+## [2026-07-29] Merge | Tim approved, PR #54 merged, live site confirmed fixed
+
+Tim approved the merge. Sonja merged PR #54 (squash, branch deleted). GitHub Pages redeployed automatically; confirmed live by curling the previously-404 paths directly: theme.js, colors_and_type.css, swot-styles.css, swot-engine-core.js, and swot-app.jsx all now return 200 on https://projects.timdixon.net/SWOT-Builder/. Status set to done.
+
+Two follow-up TASK items remain open from Carol's pass (intro-screen contrast, tweaks-panel form field labelling) — logged in the task substrate, not tracked further in this folder. The template-sync process gap (silently overwriting a project's customised deploy.yml) is also still open as a cross-cutting item for a team-root session; not addressed here.
 - [2026-07-29 20:42:29] subagent completed
 - [2026-07-29 20:43:01] subagent completed
 - [2026-07-29 20:43:33] subagent completed
