@@ -34,4 +34,15 @@ Cross-cutting note for later: a template sync silently overwriting a project's l
 
 ## [2026-07-29] Dispatch | Sean, attempt 1, failed on monthly spend limit
 
-Dispatched Sean to restore the deploy.yml ALLOW-list per the root cause above. The dispatch terminated early: "Agent terminated early due to an API error: You've hit your monthly spend limit." No branch or commit was created; nothing to roll back. Reported to Tim. Retrying on his instruction to resume.
+Dispatched Sean to restore the deploy.yml ALLOW-list per the root cause above. The dispatch terminated early: "Agent terminated early due to an API error: You've hit your monthly spend limit." No branch or commit was created; nothing to roll back. Reported to Tim. Retrying on his instruction to resume. Tim confirmed the spend limit was resolved.
+
+## [2026-07-29] Dispatch | Sean, attempt 2, succeeded
+
+Sean opened PR #54 (branch `fix/deploy-allowlist-034`) restoring the twelve root-level `--include` lines plus `fonts/***` and `assets/***`, verified via local rsync dry run and `npm test` (31/31 passing). Dispatched Carol to independently verify the artifact contents, serve it locally, and run a functional + accessibility pass before this goes to the merge gate.
+- [2026-07-29 20:42:29] subagent completed
+- [2026-07-29 20:43:01] subagent completed
+- [2026-07-29 20:43:33] subagent completed
+- [2026-07-29 20:44:04] subagent completed
+- [2026-07-29 20:44:36] subagent completed
+- [2026-07-29 20:45:07] subagent completed
+- [2026-07-29 20:45:10] subagent completed
