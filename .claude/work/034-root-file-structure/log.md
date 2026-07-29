@@ -47,6 +47,12 @@ Carol's dispatch terminated early on a transient API 500 error (not a spend limi
 ## [2026-07-29] Dispatch | Carol, attempt 2, failed on transient server error
 
 Second attempt also terminated early, this time on an API 529 "Overloaded" error — again transient infrastructure, not a finding about the fix. Retrying a third time.
+
+## [2026-07-29] Test | Carol, attempt 3, passed — sign-off for merge gate
+
+Third attempt completed. Carol independently verified the workflow file (every referenced root file has an anchored `--include`, fail-safe `--exclude='*'` last, customisation comment preserved and now names commit `4c8eede` as the regression), reproduced the rsync dry run herself (12 files plus `fonts/` and `assets/analytics/count.js`, nothing unwanted), served the artifact locally and confirmed the app mounts, the interview flow completes, the board renders, export buttons are present, theme toggle works, and no missing-script console errors (one pre-existing CSP-blocked sourcemap fetch, harmless). Ran Pa11y WCAG2AAA against the rendered artifact and found two pre-existing findings unrelated to this diff: contrast on the intro screen's `.mini-cell` quadrant swatches, and five tweak-panel form fields missing id/name. Logged both as follow-up TASK items (owner Sean, plus a low-priority CI-coverage task for Jed), not blockers — this PR changes only `deploy.yml`. Agreed with Sean's call to skip the full accessibility regression suite for a workflow-only diff.
+
+Verdict: pass on all five review items, signed off for the merge gate. Definition-of-done items in brief.md ticked. Status remains active, blocked only on Tim's merge approval for PR #54.
 - [2026-07-29 20:42:29] subagent completed
 - [2026-07-29 20:43:01] subagent completed
 - [2026-07-29 20:43:33] subagent completed
@@ -60,3 +66,13 @@ Second attempt also terminated early, this time on an API 529 "Overloaded" error
 - [2026-07-29 20:52:04] subagent completed
 - [2026-07-29 20:52:40] subagent completed
 - [2026-07-29 21:30:32] subagent completed
+- [2026-07-29 21:49:33] subagent completed
+- [2026-07-29 21:50:06] subagent completed
+- [2026-07-29 21:50:38] subagent completed
+- [2026-07-29 21:51:10] subagent completed
+- [2026-07-29 21:51:42] subagent completed
+- [2026-07-29 21:52:14] subagent completed
+- [2026-07-29 21:52:47] subagent completed
+- [2026-07-29 21:53:19] subagent completed
+- [2026-07-29 21:53:51] subagent completed
+- [2026-07-29 21:54:02] subagent completed

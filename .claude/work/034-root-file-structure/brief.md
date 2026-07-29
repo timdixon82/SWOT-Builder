@@ -11,10 +11,10 @@ This is a deploy-configuration regression, not an architecture problem. No ADR n
 Preamble fields (optional; used by the status dashboard):
 
 - Status: `active`
-- Branch: `fix/deploy-allowlist-034` (Sean to create)
+- Branch: `fix/deploy-allowlist-034`
 - Mockup mode: (n/a — not a UI change)
 - Priority: 1 (live site is broken)
-- Blockers: None
+- Blockers: Awaiting Tim's merge approval for PR #54
 
 ## Requirements
 
@@ -39,10 +39,12 @@ Rollback: The change lands on a branch behind a pull request; Carol verifies the
 
 ## Definition of done
 
-- [ ] `deploy.yml`'s rsync ALLOW-list includes every root-level runtime file: `index.html`, `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, `swot-app.jsx`, `swot-board.jsx`, `swot-engine.jsx`, `swot-interview.jsx`, `swot-intro.jsx`, `tweaks-panel.jsx`, `models.json`, plus `fonts/***` and `assets/***`.
-- [ ] A local dry run (or the workflow's own run log) confirms every one of those files lands in the `_site` artifact.
-- [ ] Carol confirms the app loads and functions (interview flow, board, export/download, theme) on the live URL with no console errors, and accessibility checks still pass.
-- [ ] The customisation comment in `deploy.yml` is preserved so a future template sync is less likely to silently drop it again (or a stronger safeguard is proposed to Tim).
+- [x] `deploy.yml`'s rsync ALLOW-list includes every root-level runtime file: `index.html`, `theme.js`, `colors_and_type.css`, `swot-styles.css`, `swot-engine-core.js`, `swot-app.jsx`, `swot-board.jsx`, `swot-engine.jsx`, `swot-interview.jsx`, `swot-intro.jsx`, `tweaks-panel.jsx`, `models.json`, plus `fonts/***` and `assets/***`. Verified independently by both Sean and Carol.
+- [x] A local dry run confirms every one of those files lands in the `_site` artifact (Sean's dry run, reproduced independently by Carol).
+- [x] Carol confirms the app loads and functions (interview flow, board, export/download, theme) with no console errors, on a local serve of the exact build artifact (the closest available proxy to the live URL, since GitHub Pages only deploys on merge to `main`).
+- [x] The customisation comment in `deploy.yml` is preserved, and now names the regressing commit so a future template sync is less likely to silently drop it again.
+
+Note: Carol's pass surfaced two pre-existing rendered-app accessibility findings unrelated to this PR's diff (contrast on the intro screen's quadrant swatches, and missing id/name on five tweak-panel form fields). Both are logged as follow-up TASK items, not blockers to this fix, since this PR touches only `deploy.yml`.
 
 ## Approved GitHub actions
 
