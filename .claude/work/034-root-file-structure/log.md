@@ -39,6 +39,10 @@ Dispatched Sean to restore the deploy.yml ALLOW-list per the root cause above. T
 ## [2026-07-29] Dispatch | Sean, attempt 2, succeeded
 
 Sean opened PR #54 (branch `fix/deploy-allowlist-034`) restoring the twelve root-level `--include` lines plus `fonts/***` and `assets/***`, verified via local rsync dry run and `npm test` (31/31 passing). Dispatched Carol to independently verify the artifact contents, serve it locally, and run a functional + accessibility pass before this goes to the merge gate.
+
+## [2026-07-29] Dispatch | Carol, attempt 1, failed on transient server error
+
+Carol's dispatch terminated early on a transient API 500 error (not a spend limit), partway through her functional pass. Before stopping she had confirmed: theme toggle works (light to dark), the interview flow advances to step 2 with the guided question rendering, and no console errors — consistent with Sean's fix. She had not yet reached the board, export/download, or her accessibility checks. Retrying the dispatch to complete the pass.
 - [2026-07-29 20:42:29] subagent completed
 - [2026-07-29 20:43:01] subagent completed
 - [2026-07-29 20:43:33] subagent completed
@@ -46,3 +50,8 @@ Sean opened PR #54 (branch `fix/deploy-allowlist-034`) restoring the twelve root
 - [2026-07-29 20:44:36] subagent completed
 - [2026-07-29 20:45:07] subagent completed
 - [2026-07-29 20:45:10] subagent completed
+- [2026-07-29 20:46:22] subagent completed
+- [2026-07-29 20:46:54] subagent completed
+- [2026-07-29 20:51:15] subagent completed
+- [2026-07-29 20:52:04] subagent completed
+- [2026-07-29 20:52:40] subagent completed
