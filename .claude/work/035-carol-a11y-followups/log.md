@@ -65,6 +65,20 @@ Logged as a low-priority follow-up (not a blocker): the five components are curr
 ## [2026-07-30] Rework | Sean dispatched, duplicate-id fix, same branch/PR
 
 Dispatched Sean back to the same branch (fix/035-a11y-followups-contrast-and-form-labels) and PR #56 to replace the `id || slugify(label)` fallback with collision-safe id generation, stable across re-renders, across all five affected components. Not opening a new PR.
+
+## [2026-07-30] Rework | Sean, complete — duplicate-id defect fixed on PR #56
+
+Fixed the duplicate-id gap Carol found in the form-labelling fix, on the same branch (`fix/035-a11y-followups-contrast-and-form-labels`), same PR #56.
+
+Root cause: `id = id || slugify(label)` only dedupes when a caller passes an explicit `id`; two same-typed, same-labelled instances got identical computed ids. Added a `useTweakId` hook in `tweaks-panel.jsx`: a module-level id registry appends a numeric suffix on collision, computed once per instance via a ref (not recomputed on every render, so the id is stable across re-renders), with an explicit `id` prop still winning unchanged. Logs a `console.warn` when a collision is auto-resolved. Applied identically to all five affected components (`TweakSlider`, `TweakSelect`, `TweakText`, `TweakNumber`, `TweakColor`'s no-options fallback) — the shared construction Carol flagged.
+
+Also fixed a latent rules-of-hooks issue while implementing: `TweakColor`'s original structure called the id logic inside its early-return branch; moved the `useTweakId` call to run unconditionally at the top of the component so hook call order can't vary across renders.
+
+Verification: `npm test` (31 tests) and `npm run lint` (html/css/js) pass, same 6 pre-existing JS lint warnings as before, none new. No component-rendering test harness exists in this project, so verified manually with a standalone Playwright + axe-core harness: two `TweakColor` instances both labelled "Accent color" got distinct ids (`accent-color`, `accent-color-2`), ids stayed stable across two forced re-renders, the collision warning fired exactly once (not once per render), and axe-core reported 0 `duplicate-id-active` violations for the scenario.
+
+Pushed to PR #56, commented with the fix summary and verification results. Not merged.
+
+Note: a hook-noise stash on `main` from a prior branch-switch conflict (`wip log.md hook noise before branch switch`) has been dropped — its content was just append-only timestamp lines, already reconciled by hand.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
