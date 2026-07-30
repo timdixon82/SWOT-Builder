@@ -253,8 +253,47 @@ function slugify(s) {
   return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
+// Module-level registry of auto-generated ids currently in use. Two field
+// instances with the same label (a realistic case — e.g. two TweakColor
+// calls both labelled "Accent color") would otherwise compute the same
+// slugified id and produce a duplicate-id-active accessibility violation.
+// On collision, appends a numeric suffix until the candidate is free.
+const __twkUsedIds = new Set();
+
+// Computes each field's id once per mounted instance (via a ref, not on
+// every render) so the id is stable across re-renders and doesn't grow a
+// new suffix each time React re-renders the component. Releases the id on
+// unmount so closing and reopening the panel doesn't leak entries into the
+// registry or grow suffixes forever. An explicit `id` prop always wins and
+// is never collision-checked or released.
+function useTweakId(label, explicitId) {
+  const idRef = React.useRef(null);
+  if (idRef.current === null) {
+    if (explicitId) {
+      idRef.current = explicitId;
+    } else {
+      const base = slugify(label);
+      let candidate = base;
+      let n = 2;
+      while (__twkUsedIds.has(candidate)) {
+        candidate = `${base}-${n}`;
+        n += 1;
+      }
+      if (candidate !== base) {
+        console.warn(`[tweaks-panel] duplicate label "${label}" — auto-generated id "${candidate}" to avoid a collision; pass an explicit id prop for clarity.`);
+      }
+      __twkUsedIds.add(candidate);
+      idRef.current = candidate;
+    }
+  }
+  React.useEffect(() => () => {
+    if (!explicitId) __twkUsedIds.delete(idRef.current);
+  }, [explicitId]);
+  return idRef.current;
+}
+
 function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange, id }) {
-  const fieldId = id || slugify(label);
+  const fieldId = useTweakId(label, id);
   return (
     <TweakRow label={label} value={`${value}${unit}`}>
       <input id={fieldId} type="range" className="twk-slider" min={min} max={max} step={step}
@@ -347,7 +386,7 @@ function TweakRadio({ label, value, options, onChange }) {
 }
 
 function TweakSelect({ label, value, options, onChange, id }) {
-  const fieldId = id || slugify(label);
+  const fieldId = useTweakId(label, id);
   return (
     <TweakRow label={label}>
       <select id={fieldId} className="twk-field" value={value} aria-label={label}
@@ -363,7 +402,7 @@ function TweakSelect({ label, value, options, onChange, id }) {
 }
 
 function TweakText({ label, value, placeholder, onChange, id }) {
-  const fieldId = id || slugify(label);
+  const fieldId = useTweakId(label, id);
   return (
     <TweakRow label={label}>
       <input id={fieldId} className="twk-field" type="text" value={value} placeholder={placeholder}
@@ -396,7 +435,7 @@ function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange, id
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
   };
-  const fieldId = id || slugify(label);
+  const fieldId = useTweakId(label, id);
   return (
     <div className="twk-num">
       <span className="twk-num-lbl" aria-hidden="true" onPointerDown={onScrubStart}>{label}</span>
@@ -436,8 +475,12 @@ const __TwkCheck = ({ light }) => (
 // option in the shape it was passed (string stays string, array stays array).
 // Without options it falls back to the native color input for back-compat.
 function TweakColor({ label, value, options, onChange, id }) {
+  // Called unconditionally, ahead of the no-options branch below, so the
+  // hook always runs in the same order regardless of whether `options` is
+  // set — conditionally calling a hook inside the branch would violate the
+  // rules of hooks if a call site ever changed `options` between renders.
+  const fieldId = useTweakId(label, id);
   if (!options || !options.length) {
-    const fieldId = id || slugify(label);
     return (
       <div className="twk-row twk-row-h">
         <div className="twk-lbl"><span>{label}</span></div>
