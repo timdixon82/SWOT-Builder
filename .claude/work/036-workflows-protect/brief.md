@@ -6,11 +6,11 @@ The team's template-sync script already supports a per-project protect list (`.c
 
 Preamble fields (optional; used by the status dashboard):
 
-- Status: `active`
-- Branch: `fix/workflows-protect-036`
+- Status: `done`
+- Branch: main (merged)
 - Mockup mode: (n/a — config file only, no UI)
 - Priority: 2
-- Blockers: Awaiting Tim's merge approval for PR #57
+- Blockers: None
 
 ## Requirements
 

@@ -9,4 +9,10 @@ Tim confirmed the team's sync script already supports `.claude/workflows-protect
 Sean created `.claude/workflows-protect` (branch `fix/workflows-protect-036`, commit `f419f23`) containing the `deploy.yml` entry plus an explanatory comment referencing work folder 034. Verified the file parses correctly against the sync script's exact parse command (`grep -v '^[[:space:]]*#' ... | grep -v '^[[:space:]]*$' | tr -d '\r'`) — output was exactly `deploy.yml`. No changes to `deploy.yml` itself or to the sync script. No test suite run (config-file-only, no functional surface); noted in the PR per the test-discipline carve-out. PR #57 opened: https://github.com/timdixon82/SWOT-Builder/pull/57. Not merged.
 
 No accessibility or security surface for this change — build-tooling config, not user-facing.
+
+## [2026-07-30] Merge | Tim approved, PR #57 merged
+
+Tim approved the merge. Sonja merged PR #57 (squash, branch deleted). `.claude/workflows-protect` is now live on `main`, listing `deploy.yml`. Status set to done.
 - [2026-07-30 17:12:49] subagent completed
+- [2026-07-30 17:13:21] subagent completed
+- [2026-07-30 17:13:52] subagent completed
