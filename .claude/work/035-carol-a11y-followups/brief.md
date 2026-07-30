@@ -18,7 +18,7 @@ No new requirements from Tad — these are conformance fixes against WCAG 2.2 AA
 
 ## Routing plan
 
-Sonja dispatches contrast-master to read `swot-intro.jsx` / `swot-styles.css` and diagnose why Pa11y can't resolve a contrast ratio for `.mini-cell.s/.w/.o/.t`, and forms-specialist to read `tweaks-panel.jsx` and specify the correct `id`/`name`/label wiring for the five affected fields. Both run in parallel — different files, no shared state. Their findings go to Sean to implement in the same branch. Carol then re-tests (functional + accessibility passes, in parallel) against the fixed build. Sonja reviews and brings the merge to Tim.
+Sonja dispatched contrast-master to read `swot-intro.jsx` / `swot-styles.css` and diagnose why Pa11y can't resolve a contrast ratio for `.mini-cell.s/.w/.o/.t`, and forms-specialist to read `tweaks-panel.jsx` and specify the correct `id`/`name`/label wiring for the five affected fields. Both ran in parallel — different files, no shared state. Both complete; findings recorded in log.md. Next: Sean implements both fixes on one branch -> Simon signs off on the new dark-mode swatch colours (contrast-master's fix changes their visual appearance) -> Carol re-tests (functional + accessibility passes, in parallel; accessibility pass to include dark mode explicitly forced) -> Sonja reviews and brings the merge to Tim.
 
 ## Out of scope
 
