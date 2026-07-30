@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.2...v1.1.3) (2026-07-30)
+
+
+### Bug Fixes
+
+* dark-mode swatch contrast and tweak-panel field labelling ([2a444a5](https://github.com/timdixon82/SWOT-Builder/commit/2a444a5ab42ecb35de91fa268d7b81285c08ad1b))
+* make tweak-panel field id generation collision-safe ([e8ce0d5](https://github.com/timdixon82/SWOT-Builder/commit/e8ce0d56fff76bafd4217b6fa87be4cdbac0b6c4))
+* restore deploy.yml ALLOW-list for SWOT Builder's root-level layout ([#54](https://github.com/timdixon82/SWOT-Builder/issues/54)) ([b27caa8](https://github.com/timdixon82/SWOT-Builder/commit/b27caa859cd8687282452a4909a1832027d0ebb3))
+
 ## [1.1.2](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.1...v1.1.2) (2026-07-23)
 
 
