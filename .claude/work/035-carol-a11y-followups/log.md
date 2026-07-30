@@ -39,6 +39,20 @@ Opened PR, flagged Simon's sign-off on the new dark-mode swatch colours per the 
 ## [2026-07-30] Dispatch | Simon, sign-off on dark-mode swatch colours
 
 Dispatched Simon for a narrow sign-off on the four new dark-theme `.mini-cell` colours against `docs/brand.md`, not a full design review. PR #56 is https://github.com/timdixon82/SWOT-Builder/pull/56.
+
+## [2026-07-30] Rework | Sean, complete — duplicate-id defect fixed on PR #56
+
+Fixed the duplicate-id gap Carol found in the form-labelling fix, on the same branch (`fix/035-a11y-followups-contrast-and-form-labels`), same PR #56.
+
+Root cause: `id = id || slugify(label)` only dedupes when a caller passes an explicit `id`; two same-typed, same-labelled instances got identical computed ids. Added a `useTweakId` hook in `tweaks-panel.jsx`: a module-level id registry appends a numeric suffix on collision, computed once per instance via a ref (not recomputed on every render, so the id is stable across re-renders), with an explicit `id` prop still winning unchanged. Logs a `console.warn` when a collision is auto-resolved. Applied identically to all five affected components (`TweakSlider`, `TweakSelect`, `TweakText`, `TweakNumber`, `TweakColor`'s no-options fallback) — the shared construction Carol flagged.
+
+Also fixed a latent rules-of-hooks issue while implementing: `TweakColor`'s original structure called the id logic inside its early-return branch; moved the `useTweakId` call to run unconditionally at the top of the component so hook call order can't vary across renders.
+
+Verification: `npm test` (31 tests) and `npm run lint` (html/css/js) pass, same 6 pre-existing JS lint warnings as before, none new. No component-rendering test harness exists in this project, so verified manually with a standalone Playwright + axe-core harness: two `TweakColor` instances both labelled "Accent color" got distinct ids (`accent-color`, `accent-color-2`), ids stayed stable across two forced re-renders, the collision warning fired exactly once (not once per render), and axe-core reported 0 `duplicate-id-active` violations for the scenario.
+
+Pushed to PR #56, commented with the fix summary and verification results. Not merged — returning to Sonja to route back to Carol for re-test.
+
+Note: found a `git stash` on `main` (`wip log.md hook noise before branch switch`) left over from resolving a branch-switch conflict caused by hook-appended timestamp entries on this file — not dropped, since it wasn't mine to resolve; flagging for Sonja's awareness.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
