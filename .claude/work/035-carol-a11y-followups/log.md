@@ -133,4 +133,9 @@ One pre-existing, unrelated finding: a moderate axe-core "region" violation (pag
 Noted for the team: Carol hit a false failure mid-test when the shared working tree was switched to `main` by a concurrent merge (PR #57), and resolved it by moving to an isolated git worktree. Worth remembering when multiple work folders are active in the same session.
 
 **Verdict: PASS. Signed off PR #56 for the merge gate.** Both fixes (contrast and form labelling, including the rework) are complete and verified independently.
-- [2026-07-30 17:25:28] subagent completed
+
+## [2026-07-30] Merge | Tim approved, PR #56 merged
+
+Tim approved the merge. The PR branch had drifted from main's work-folder housekeeping commits (the branch carried its own older log.md/brief.md snapshots from when Sean opened and reworked it), so GitHub reported a conflict on those two files. Resolved locally: merged the branch into main, kept main's log.md/brief.md (a strict superset of the branch's copy — confirmed by diff before resolving), and took the branch's actual code changes (`swot-styles.css`, `tweaks-panel.jsx`) as-is. Verified `npm test` still passes (31/31) post-merge, then pushed to main; GitHub auto-detected the branch's commits were now in main's history and marked PR #56 merged. Status set to done.
+
+This is the same class of issue as work folder 034's merge — a specialist's own housekeeping commit on a long-lived feature branch outpaces main's. Worth a process note: specialists committing to their own branch's copy of `brief.md`/`log.md` (rather than leaving those files untouched on the branch and letting Sonja's main-only housekeeping be the sole source of truth) is what causes this. Not fixed here; flagging for later consideration alongside the template-sync process gap.

@@ -6,11 +6,11 @@ Two pre-existing accessibility defects surfaced while Carol tested work folder 0
 
 Preamble fields (optional; used by the status dashboard):
 
-- Status: `active`
-- Branch: `fix/035-a11y-followups-contrast-and-form-labels`
+- Status: `done`
+- Branch: main (merged)
 - Mockup mode: D (no UI redesign — these are accessibility conformance fixes to existing markup, not a visual change Tim needs to see mocked up first)
 - Priority: 2
-- Blockers: Awaiting Tim's merge approval for PR #56
+- Blockers: None
 
 ## Requirements
 
