@@ -35,6 +35,10 @@ Fix 2 (`tweaks-panel.jsx`): added a `slugify` helper (none existed) and wired `i
 Ran the accessibility regression suite (global `docs/patterns/accessibility-regression-suite.md`) manually — no `scripts/accessibility-regression.sh` runner is present in this project yet. S-05 (category colour missed in a scheme revision) is the directly relevant entry: confirmed all four dark-mode swatch colours were updated, not just some, and the two mid-line `--*-fg`/`--*-bg` shared tokens were deliberately left untouched per the brief. S-04, S-10, S-11, S-12 not applicable — no opacity-based colours, focus rings, input borders, or modals were touched by this change.
 
 Opened PR, flagged Simon's sign-off on the new dark-mode swatch colours per the routing plan. Returning to Sonja.
+
+## [2026-07-30] Dispatch | Simon, sign-off on dark-mode swatch colours
+
+Dispatched Simon for a narrow sign-off on the four new dark-theme `.mini-cell` colours against `docs/brand.md`, not a full design review. PR #56 is https://github.com/timdixon82/SWOT-Builder/pull/56.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
@@ -49,3 +53,6 @@ Opened PR, flagged Simon's sign-off on the new dark-mode swatch colours per the 
 - [2026-07-30 16:43:18] subagent completed
 - [2026-07-30 16:43:50] subagent completed
 - [2026-07-30 16:44:22] subagent completed
+- [2026-07-30 16:45:58] subagent completed
+- [2026-07-30 16:46:29] subagent completed
+- [2026-07-30 16:46:30] subagent completed
