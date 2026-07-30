@@ -1,0 +1,11 @@
+# Workflow files listed here are never overwritten by a template sync.
+# See scripts/sync-from-template.sh in the team master for how this file is read.
+#
+# deploy.yml: SWOT Builder is an unbundled static front-end project whose
+# runtime files sit at the repository root, not in the template's default
+# styles/scripts/data/assets layout, so this project's deploy.yml carries a
+# permanently customised rsync allow-list. Without a protect entry, a
+# routine template sync silently overwrote that customisation twice (see
+# .claude/work/034-root-file-structure/log.md for the incident and
+# .claude/work/036-workflows-protect/ for this fix).
+deploy.yml
