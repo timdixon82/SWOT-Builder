@@ -21,6 +21,24 @@ Recommended fix: add four new dark-theme-only, flat (non-alpha) `.mini-cell.s/w/
 Flagged: the darker, opaque dark-mode swatches will look visually different from today's translucent tint (an unavoidable consequence of reaching 7:1 with alpha-blended low-contrast tints) — contrast-master recommends Simon sign off on the new colours before merge, and Carol re-test with dark mode explicitly forced (the earlier default-only Pa11y run missed this because default/light passes).
 
 Added Simon to the routing plan (brief.md) for a quick sign-off on the new dark-mode swatch colours before this goes to Carol/merge.
+
+## [2026-07-30] Implementation | Sean, complete
+
+Implemented both fixes exactly as specified by contrast-master and forms-specialist, on branch `fix/035-a11y-followups-contrast-and-form-labels`.
+
+Fix 1 (`swot-styles.css`): added the four dark-theme-only `.mini-cell.s/w/o/t` background overrides after the existing base rule block. Recomputed contrast by hand against the confirmed dark-theme `-fg` tokens (`#86efac`, `#fca5a5`, `#63D2FF`, `#ffb066` — match the diagnosis) and got S 10.16:1, W 9.15:1, O 9.17:1, T 9.12:1, all comfortably above 7:1 and consistent with contrast-master's numbers (off by ~0.01-0.3 due to rounding in manual composite math, not a discrepancy).
+
+Fix 2 (`tweaks-panel.jsx`): added a `slugify` helper (none existed) and wired `id`/`aria-label` into all five flagged fields (`TweakSlider`, `TweakSelect`, `TweakText`, `TweakNumber`, `TweakColor`'s no-options fallback), each defaulting the id to a slug of the `label` prop with an optional `id` prop override. `TweakNumber`'s visible label and unit spans got `aria-hidden="true"` to avoid double-announcement, per forms-specialist's note.
+
+`npm test` (31 tests, `tests/swot-engine-core.test.js`) passes; that suite covers pure engine logic only, no component rendering, so it doesn't exercise either change — noted in the PR per the test-discipline carve-out (no test harness for component-level rendering in this project). `npm run lint:css` clean. `npm run lint:js` shows the same 6 pre-existing warnings as before the change (confirmed via `git stash`), none introduced by this work.
+
+Ran the accessibility regression suite (global `docs/patterns/accessibility-regression-suite.md`) manually — no `scripts/accessibility-regression.sh` runner is present in this project yet. S-05 (category colour missed in a scheme revision) is the directly relevant entry: confirmed all four dark-mode swatch colours were updated, not just some, and the two mid-line `--*-fg`/`--*-bg` shared tokens were deliberately left untouched per the brief. S-04, S-10, S-11, S-12 not applicable — no opacity-based colours, focus rings, input borders, or modals were touched by this change.
+
+Opened PR, flagged Simon's sign-off on the new dark-mode swatch colours per the routing plan. Returning to Sonja.
+
+## [2026-07-30] Dispatch | Simon, sign-off on dark-mode swatch colours
+
+Dispatched Simon for a narrow sign-off on the four new dark-theme `.mini-cell` colours against `docs/brand.md`, not a full design review. PR #56 is https://github.com/timdixon82/SWOT-Builder/pull/56.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
@@ -31,3 +49,11 @@ Added Simon to the routing plan (brief.md) for a quick sign-off on the new dark-
 - [2026-07-30 16:40:00] subagent completed
 - [2026-07-30 16:41:01] subagent completed
 - [2026-07-30 16:41:12] subagent completed
+- [2026-07-30 16:42:46] subagent completed
+- [2026-07-30 16:43:18] subagent completed
+- [2026-07-30 16:43:50] subagent completed
+- [2026-07-30 16:44:22] subagent completed
+- [2026-07-30 16:45:58] subagent completed
+- [2026-07-30 16:46:29] subagent completed
+- [2026-07-30 16:46:30] subagent completed
+- [2026-07-30 16:48:14] subagent completed
