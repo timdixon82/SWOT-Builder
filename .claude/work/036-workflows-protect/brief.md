@@ -7,10 +7,10 @@ The team's template-sync script already supports a per-project protect list (`.c
 Preamble fields (optional; used by the status dashboard):
 
 - Status: `active`
-- Branch: none yet
+- Branch: `fix/workflows-protect-036`
 - Mockup mode: (n/a — config file only, no UI)
 - Priority: 2
-- Blockers: None
+- Blockers: Awaiting Tim's merge approval for PR #57
 
 ## Requirements
 
@@ -34,9 +34,9 @@ Rollback: The change lands on a branch behind a pull request; if not wanted, don
 
 ## Definition of done
 
-- [ ] `.claude/workflows-protect` exists in the repository root's `.claude/` folder, containing `deploy.yml` (and a comment noting why).
-- [ ] File format matches what `scripts/sync-from-template.sh` expects: one filename (basename) per line, `#`-prefixed comment lines ignored.
-- [ ] No other files changed.
+- [x] `.claude/workflows-protect` exists in the repository root's `.claude/` folder, containing `deploy.yml` (and a comment noting why).
+- [x] File format matches what `scripts/sync-from-template.sh` expects: one filename (basename) per line, `#`-prefixed comment lines ignored. Verified against the sync script's exact parse command.
+- [x] No other files changed. Confirmed via PR diff — one file only.
 
 ## Approved GitHub actions
 
