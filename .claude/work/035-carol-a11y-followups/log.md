@@ -43,6 +43,10 @@ Dispatched Simon for a narrow sign-off on the four new dark-theme `.mini-cell` c
 ## [2026-07-30] Design sign-off | Simon, approved
 
 Simon checked the four new hex values against `docs/brand.md` and approved with no changes. Reasoning: the new opaque colours sit in the same low-lightness register as the dark theme's `--neutral-bg`, read as a coherent family (darkened/desaturated per-quadrant hue, not a new palette), and are more consistent with the brand's "flat, no gradients/textures" design style than the translucent tint they replace. These are the project's own status-colour system, not the three core brand accent colours, so no accent-pairing or accent-as-small-text rule applies. Did not re-derive contrast ratios (that's contrast-master's and Sean's job, already confirmed). Design pass clear; proceeding to Carol.
+
+## [2026-07-30] Dispatch | Carol, testing PR #56
+
+Dispatched Carol for: dark-mode-specific Pa11y re-run on the intro screen (the gap that let the original defect through), accessibility-tree inspection of the five tweak-panel fields for unique ids and accessible names, functional regression on the tweak panel (including the number field's drag-to-scrub interaction, since aria-hidden was added near it), and a general axe-core pass.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
