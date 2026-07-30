@@ -83,3 +83,8 @@ Two follow-up TASK items remain open from Carol's pass (intro-screen contrast, t
 - [2026-07-29 21:53:51] subagent completed
 - [2026-07-29 21:54:02] subagent completed
 - [2026-07-29 21:57:54] subagent completed
+- [2026-07-29 23:14:37] subagent completed
+- [2026-07-30 16:44:54] subagent completed
+- [2026-07-30 16:45:26] subagent completed
+- [2026-07-30 16:47:25] subagent completed
+- [2026-07-30 16:47:57] subagent completed
