@@ -297,6 +297,11 @@ body { font-family: var(--font-sans); }
 .mini-cell.o { background: var(--o-bg); color: var(--o-fg); }
 .mini-cell.t { background: var(--t-bg); color: var(--t-fg); }
 
+:root[data-theme="dark"] .mini-cell.s { background: #14301F; }
+:root[data-theme="dark"] .mini-cell.w { background: #2A1414; }
+:root[data-theme="dark"] .mini-cell.o { background: #0F2438; }
+:root[data-theme="dark"] .mini-cell.t { background: #2E1B0A; }
+
 .subject-suggestions {
   display: flex;
   gap: var(--space-2);
