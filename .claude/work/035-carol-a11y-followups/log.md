@@ -119,3 +119,17 @@ Note: a hook-noise stash on `main` from a prior branch-switch conflict (`wip log
 - [2026-07-30 17:00:09] subagent completed
 - [2026-07-30 17:00:41] subagent completed
 - [2026-07-30 17:00:52] subagent completed
+
+## [2026-07-30] Dispatch | Carol, re-testing rework on PR #56
+
+Dispatched Carol to independently re-verify Sean's duplicate-id fix (not trust his report), including re-running everything from her original test report that wasn't superseded.
+
+## [2026-07-30] Test | Carol, PR #56 rework — pass, signed off for merge gate
+
+Reproduced the exact duplicate-id scenario from scratch (two `TweakColor` instances labelled "Accent color", plus two `TweakSlider` instances labelled "Spacing" for breadth): computed ids now correctly disambiguate (`accent-color`/`accent-color-2`, `spacing`/`spacing-2`), 0 `duplicate-id-active` violations (was 1 serious). Confirmed ids stay stable across two forced re-renders and the collision warning fires exactly once per pair, not once per render. Confirmed the `TweakColor` rules-of-hooks fix didn't break either the native-input or chip-picker path. Re-ran dark/light Pa11y (0 issues both), single-instance id/aria-label correctness (all five fields), full functional regression (including drag-to-scrub), and a general axe-core pass. `npm test` (31/31) and lint clean, no new warnings.
+
+One pre-existing, unrelated finding: a moderate axe-core "region" violation (page content not contained by landmarks) on the first interview question screen — confirmed present on `main` too, so not a regression from this PR. Logged as a low-priority follow-up task, not a blocker.
+
+Noted for the team: Carol hit a false failure mid-test when the shared working tree was switched to `main` by a concurrent merge (PR #57), and resolved it by moving to an isolated git worktree. Worth remembering when multiple work folders are active in the same session.
+
+**Verdict: PASS. Signed off PR #56 for the merge gate.** Both fixes (contrast and form labelling, including the rework) are complete and verified independently.

@@ -7,10 +7,10 @@ Two pre-existing accessibility defects surfaced while Carol tested work folder 0
 Preamble fields (optional; used by the status dashboard):
 
 - Status: `active`
-- Branch: none yet
+- Branch: `fix/035-a11y-followups-contrast-and-form-labels`
 - Mockup mode: D (no UI redesign — these are accessibility conformance fixes to existing markup, not a visual change Tim needs to see mocked up first)
 - Priority: 2
-- Blockers: None
+- Blockers: Awaiting Tim's merge approval for PR #56
 
 ## Requirements
 
@@ -34,11 +34,13 @@ Rollback: The change lands on a branch behind a pull request; if Carol's or Simo
 
 ## Definition of done
 
-- [ ] contrast-master's diagnosis for the `.mini-cell` swatches is implemented, and Pa11y WCAG2AAA no longer reports a "NaN:1" or failing ratio for any of `.mini-cell.s/.w/.o/.t`, checked across all four board style variants (Classic, Executive, Bold, Pills).
-- [ ] forms-specialist's fix for the five tweak-panel fields is implemented: every field has a proper `id`, an associated `<label>` or `aria-label`/`aria-labelledby`, and a `name` where appropriate.
-- [ ] Carol's functional pass confirms the interview flow and tweak panel still work exactly as before (no regression from the labelling change).
-- [ ] Carol's accessibility pass (axe-core, Pa11y WCAG2AAA) is clean on both fixed areas.
-- [ ] The two TASK items from work folder 034 (`from:carol-034-root-file-structure`, contrast and form-field items) are marked resolved once this merges.
+- [x] contrast-master's diagnosis for the `.mini-cell` swatches is implemented, and Pa11y WCAG2AAA no longer reports a "NaN:1" or failing ratio for any of `.mini-cell.s/.w/.o/.t`. Confirmed for light and dark theme; contrast-master's own diagnosis established `.mini-cell` is defined once and unaffected by the Classic/Executive/Bold/Pills board-style selectors, so no per-variant check was needed.
+- [x] forms-specialist's fix for the five tweak-panel fields is implemented: every field has a proper, collision-safe `id` and an `aria-label` (matching this codebase's existing labelling convention, used in place of literal `<label>` elements elsewhere too).
+- [x] Carol's functional pass confirms the interview flow and tweak panel still work exactly as before (no regression from the labelling change), including the number field's drag-to-scrub interaction.
+- [x] Carol's accessibility pass (axe-core, Pa11y WCAG2AAA) is clean on both fixed areas, including a specific re-test for the duplicate-id defect found and fixed during rework.
+- [x] The two TASK items from work folder 034 (`from:carol-034-root-file-structure`, contrast and form-field items) are resolved by this work.
+
+Note: Carol found during testing that the five fixed tweak-panel fields are not currently reachable in the shipped app (only `TweakRadio` is used in the live interview flow; this component library only opens via an external design-tool integration). The fixes are still correct and worth having, but they don't restore something visibly broken today — logged as a separate low-priority follow-up task, not a blocker to this work.
 
 ## Approved GitHub actions
 
