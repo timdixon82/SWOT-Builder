@@ -246,11 +246,19 @@ function TweakRow({ label, value, children, inline = false }) {
 
 // ── Controls ────────────────────────────────────────────────────────────────
 
-function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange }) {
+// Derives a stable, per-instance id from a control's visible label (used as
+// the default `id` prop below) so each rendered field gets a unique,
+// programmatic identifier without every call site having to supply one.
+function slugify(s) {
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function TweakSlider({ label, value, min = 0, max = 100, step = 1, unit = '', onChange, id }) {
+  const fieldId = id || slugify(label);
   return (
     <TweakRow label={label} value={`${value}${unit}`}>
-      <input type="range" className="twk-slider" min={min} max={max} step={step}
-             value={value} onChange={(e) => onChange(Number(e.target.value))} />
+      <input id={fieldId} type="range" className="twk-slider" min={min} max={max} step={step}
+             value={value} aria-label={label} onChange={(e) => onChange(Number(e.target.value))} />
     </TweakRow>
   );
 }
@@ -338,10 +346,12 @@ function TweakRadio({ label, value, options, onChange }) {
   );
 }
 
-function TweakSelect({ label, value, options, onChange }) {
+function TweakSelect({ label, value, options, onChange, id }) {
+  const fieldId = id || slugify(label);
   return (
     <TweakRow label={label}>
-      <select className="twk-field" value={value} onChange={(e) => onChange(e.target.value)}>
+      <select id={fieldId} className="twk-field" value={value} aria-label={label}
+              onChange={(e) => onChange(e.target.value)}>
         {options.map((o) => {
           const v = typeof o === 'object' ? o.value : o;
           const l = typeof o === 'object' ? o.label : o;
@@ -352,16 +362,17 @@ function TweakSelect({ label, value, options, onChange }) {
   );
 }
 
-function TweakText({ label, value, placeholder, onChange }) {
+function TweakText({ label, value, placeholder, onChange, id }) {
+  const fieldId = id || slugify(label);
   return (
     <TweakRow label={label}>
-      <input className="twk-field" type="text" value={value} placeholder={placeholder}
-             onChange={(e) => onChange(e.target.value)} />
+      <input id={fieldId} className="twk-field" type="text" value={value} placeholder={placeholder}
+             aria-label={label} onChange={(e) => onChange(e.target.value)} />
     </TweakRow>
   );
 }
 
-function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) {
+function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange, id }) {
   const clamp = (n) => {
     if (min != null && n < min) return min;
     if (max != null && n > max) return max;
@@ -385,12 +396,14 @@ function TweakNumber({ label, value, min, max, step = 1, unit = '', onChange }) 
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
   };
+  const fieldId = id || slugify(label);
   return (
     <div className="twk-num">
-      <span className="twk-num-lbl" onPointerDown={onScrubStart}>{label}</span>
-      <input type="number" value={value} min={min} max={max} step={step}
+      <span className="twk-num-lbl" aria-hidden="true" onPointerDown={onScrubStart}>{label}</span>
+      <input id={fieldId} type="number" value={value} min={min} max={max} step={step}
+             aria-label={`${label}${unit ? ` (${unit})` : ''}`}
              onChange={(e) => onChange(clamp(Number(e.target.value)))} />
-      {unit && <span className="twk-num-unit">{unit}</span>}
+      {unit && <span className="twk-num-unit" aria-hidden="true">{unit}</span>}
     </div>
   );
 }
@@ -422,13 +435,14 @@ const __TwkCheck = ({ light }) => (
 // rest stacked in a sharp column on the right. onChange emits the
 // option in the shape it was passed (string stays string, array stays array).
 // Without options it falls back to the native color input for back-compat.
-function TweakColor({ label, value, options, onChange }) {
+function TweakColor({ label, value, options, onChange, id }) {
   if (!options || !options.length) {
+    const fieldId = id || slugify(label);
     return (
       <div className="twk-row twk-row-h">
         <div className="twk-lbl"><span>{label}</span></div>
-        <input type="color" className="twk-swatch" value={value}
-               onChange={(e) => onChange(e.target.value)} />
+        <input id={fieldId} type="color" className="twk-swatch" value={value}
+               aria-label={label} onChange={(e) => onChange(e.target.value)} />
       </div>
     );
   }
