@@ -47,6 +47,20 @@ Simon checked the four new hex values against `docs/brand.md` and approved with 
 ## [2026-07-30] Dispatch | Carol, testing PR #56
 
 Dispatched Carol for: dark-mode-specific Pa11y re-run on the intro screen (the gap that let the original defect through), accessibility-tree inspection of the five tweak-panel fields for unique ids and accessible names, functional regression on the tweak panel (including the number field's drag-to-scrub interaction, since aria-hidden was added near it), and a general axe-core pass.
+
+## [2026-07-30] Test | Carol, PR #56 — contrast passes, form-labelling fix has a real gap, rework needed
+
+**Contrast (item 1): pass, clean.** Carol force-set dark theme and ran Pa11y WCAG2AAA against the rendered intro screen: 0 issues on the fix branch (both themes). Sanity-checked her own methodology by running the identical harness against pre-fix `main`, which reproduced all 4 original NaN:1 failures — confirms the test actually catches the defect, not a false negative.
+
+**Scope correction: the five fixed tweak-panel fields are not reachable in the live app.** Carol traced `tweaks-panel.jsx`'s usage and found `AppTweaksPanel` (the only place it's mounted, `swot-app.jsx` line 637) uses exclusively `TweakRadio`, and the whole `TweaksPanel` shell only opens via an external `postMessage` from a design-tool host — there's no in-app button and it isn't part of the interview flow. The "tweak-review panel" phrase in the original dispatch brief was a misreading of unrelated, already-labelled interview-flow fields. Carol tested the five components directly via a standalone harness instead.
+
+**Form labelling (item 2): defect found, not ready to merge.** Single-instance labelling (unique id + aria-label) works correctly for all five field types. But the duplicate-id risk that forms-specialist explicitly flagged in the original diagnosis — `id = id || slugify(label)` only deduplicates when a caller passes an explicit `id` — is still live in the shipped fix. Carol reproduced it concretely: two same-labelled instances of the same field type (e.g. two `TweakColor` calls both labelled "Accent color") get an identical computed id; axe-core flags this as `duplicate-id-active` (serious impact), and Playwright's strict-mode selector resolution throws. Same construction is shared across all five components, so the risk is general, not isolated to one field type.
+
+General axe-core pass (intro screen + first interview question): 0 violations, no other regression.
+
+**Verdict: not signed off. Rework needed on Fix 2 before merge.** Carol recommends either an auto-disambiguating id fallback (append an instance counter on collision) or an enforced-unique-id contract with a dev-time warning. Routing back to Sean.
+
+Logged as a low-priority follow-up (not a blocker): the five components are currently dead code in the shipped app, worth deciding whether to wire them in, remove them, or document them as library-only.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
@@ -65,3 +79,25 @@ Dispatched Carol for: dark-mode-specific Pa11y re-run on the intro screen (the g
 - [2026-07-30 16:46:29] subagent completed
 - [2026-07-30 16:46:30] subagent completed
 - [2026-07-30 16:48:14] subagent completed
+- [2026-07-30 16:49:53] subagent completed
+- [2026-07-30 16:50:25] subagent completed
+- [2026-07-30 16:50:57] subagent completed
+- [2026-07-30 16:51:29] subagent completed
+- [2026-07-30 16:52:02] subagent completed
+- [2026-07-30 16:52:34] subagent completed
+- [2026-07-30 16:53:05] subagent completed
+- [2026-07-30 16:53:38] subagent completed
+- [2026-07-30 16:54:10] subagent completed
+- [2026-07-30 16:54:42] subagent completed
+- [2026-07-30 16:55:16] subagent completed
+- [2026-07-30 16:55:48] subagent completed
+- [2026-07-30 16:56:21] subagent completed
+- [2026-07-30 16:56:54] subagent completed
+- [2026-07-30 16:57:26] subagent completed
+- [2026-07-30 16:57:58] subagent completed
+- [2026-07-30 16:58:32] subagent completed
+- [2026-07-30 16:59:04] subagent completed
+- [2026-07-30 16:59:37] subagent completed
+- [2026-07-30 17:00:09] subagent completed
+- [2026-07-30 17:00:41] subagent completed
+- [2026-07-30 17:00:52] subagent completed
