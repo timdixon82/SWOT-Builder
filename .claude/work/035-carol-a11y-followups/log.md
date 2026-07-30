@@ -61,6 +61,10 @@ General axe-core pass (intro screen + first interview question): 0 violations, n
 **Verdict: not signed off. Rework needed on Fix 2 before merge.** Carol recommends either an auto-disambiguating id fallback (append an instance counter on collision) or an enforced-unique-id contract with a dev-time warning. Routing back to Sean.
 
 Logged as a low-priority follow-up (not a blocker): the five components are currently dead code in the shipped app, worth deciding whether to wire them in, remove them, or document them as library-only.
+
+## [2026-07-30] Rework | Sean dispatched, duplicate-id fix, same branch/PR
+
+Dispatched Sean back to the same branch (fix/035-a11y-followups-contrast-and-form-labels) and PR #56 to replace the `id || slugify(label)` fallback with collision-safe id generation, stable across re-renders, across all five affected components. Not opening a new PR.
 - [2026-07-30 16:36:52] subagent completed
 - [2026-07-30 16:36:59] subagent completed
 - [2026-07-30 16:37:24] subagent completed
