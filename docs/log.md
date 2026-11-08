@@ -36,3 +36,7 @@ The project wiki was written into `docs/` in the SWOT-Builder repository on bran
 - `docs/decisions/adr-0007-cdn-dependencies-pin-and-sri.md`
 
 Author: Tad (business analyst and documenter).
+
+## [2026-11-08] Change | npm tool folders moved to ci-tools
+
+The lint-tools and accessibility-tools folders moved from .github to a top-level ci-tools folder, because Dependabot refuses npm updates for a root .github folder. Dependabot now also watches ci-tools/accessibility-tools. This is the pilot for work folder 058 in the AgentTeam repository.
