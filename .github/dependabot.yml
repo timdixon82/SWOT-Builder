@@ -20,11 +20,22 @@ updates:
           - patch
 
   - package-ecosystem: npm
-    directory: /.github/lint-tools
+    directory: /ci-tools/lint-tools
     schedule:
       interval: weekly
     cooldown:
       default-days: 7
     groups:
       lint-tools:
+        patterns: ["*"]
+
+  # Deliberate: added in the pilot for work folder 058 so Dependabot checks this folder.
+  - package-ecosystem: npm
+    directory: /ci-tools/accessibility-tools
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      accessibility-tools:
         patterns: ["*"]
