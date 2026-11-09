@@ -1,0 +1,39 @@
+# GitHub Pages publish list for SWOT Builder.
+# Only the paths listed here become public. See docs/patterns/github-pages-deploy.md
+# in the team repository for the format. Any change to this file changes what is
+# public and needs security review.
+#
+# SWOT Builder is an unbundled Babel Standalone app: its runtime files sit at the
+# repository root, plus fonts/ and assets/.
+
+/index.html
+/colors_and_type.css
+/swot-styles.css
+/theme.js
+/swot-app.jsx
+/swot-board.jsx
+/swot-engine.jsx
+/swot-engine-core.js
+/swot-interview.jsx
+/swot-intro.jsx
+/tweaks-panel.jsx
+/models.json
+/fonts/
+/assets/
+
+# Runtime files the page loads. The live check fails if any is lost.
+require /index.html
+require /colors_and_type.css
+require /swot-styles.css
+require /theme.js
+require /swot-app.jsx
+require /swot-board.jsx
+require /swot-engine.jsx
+require /swot-engine-core.js
+require /swot-interview.jsx
+require /swot-intro.jsx
+require /tweaks-panel.jsx
+require /models.json
+require /fonts/Roboto-VariableFont.ttf
+require /fonts/Roboto-Italic-VariableFont.ttf
+require /assets/analytics/count.js
