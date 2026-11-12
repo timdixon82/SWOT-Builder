@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.3...v1.1.4) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** override minimatch to ^11.0.1 to clear Dependabot alert 118 ([#77](https://github.com/timdixon82/SWOT-Builder/issues/77)) ([bac9871](https://github.com/timdixon82/SWOT-Builder/commit/bac9871a47713b0f8cd2e5102ef54da50023e9f5))
+
 ## [1.1.3](https://github.com/timdixon82/SWOT-Builder/compare/v1.1.2...v1.1.3) (2026-11-02)
 
 
