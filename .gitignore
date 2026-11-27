@@ -45,3 +45,15 @@ pa11y.ci.json
 
 # Session transcripts — local working notes, not for commit.
 .claude/transcripts/
+
+# Local audit trail written by a team hook, not for the repository
+.claude/work/*/events.jsonl
+
+# Local audit trail written by a team hook, not for the repository
+.claude/work/*/github-actions-log.md
+
+# Local audit trail written by a team hook, not for the repository
+/lint.md
+
+# Local audit trail written by a team hook, not for the repository
+.claude/.status-rebuild.lock
